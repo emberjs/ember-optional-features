@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 const SilentError = require('silent-error');
 const fs = require('fs');
+const mkdirp = require('mkdirp');
 const path = require('path');
 
 const SHARED = {
@@ -24,6 +25,8 @@ const SHARED = {
       }
     }
 
+    mkdirp.sync(path.join(this.project.root, 'config'));
+
     let configPath = path.join(this.project.root, 'config', 'optional-features.json');
 
     fs.writeFileSync(configPath, '{}', { encoding: 'UTF-8' });
@@ -36,7 +39,7 @@ const SHARED = {
     let configJson = fs.readFileSync(configPath, { encoding: 'UTF-8' });
     let config = JSON.parse(configJson);
     config[name] = value;
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), { encoding: 'UTF-8' });
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', { encoding: 'UTF-8' });
   }
 };
 
