@@ -2,12 +2,7 @@
 
 const SilentError = require('silent-error');
 
-const DEFAULT_VALUES = {
-  'application-template-wrapper': true,
-  'template-only-component-wrapper': true
-};
-
-const SUPPORTED_FEATURES = Object.keys(DEFAULT_VALUES);
+const FEATURES = require('./features');
 
 module.exports = {
   name: '@ember/optional-features',
@@ -47,16 +42,16 @@ module.exports = {
     let keys = Object.keys(features);
 
     keys.forEach(key => {
-      if (SUPPORTED_FEATURES.indexOf(key) === -1) {
+      if (FEATURES.NAMES.indexOf(key) === -1) {
         throw new SilentError(`Unknown feature "${key}" found in config/optional-features.js`);
       } else if (typeof features[key] !== 'boolean') {
         throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.js`);
       }
     });
 
-    SUPPORTED_FEATURES.forEach(key => {
+    FEATURES.NAMES.forEach(key => {
       if (features[key] === undefined) {
-        features[key] = DEFAULT_VALUES[key];
+        features[key] = FEATURES.DEFAULTS[key];
       }
     });
 
@@ -76,7 +71,7 @@ module.exports = {
     keys.forEach(key => {
       let value = features[key];
 
-      if (value !== DEFAULT_VALUES[key]) {
+      if (value !== FEATURES.DEFAULTS[key]) {
         let KEY = `_${key.toUpperCase().replace(/-/g, '_')}`;
         EmberENV[KEY] = value;
       }

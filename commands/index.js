@@ -6,10 +6,12 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
+const FEATURES = require('../features');
+
 const SHARED = {
   _ensureConfigFile() {
     try {
-      return this.project.resolveSync('config/optional-features.json');
+      return this.project.resolveSync('./config/optional-features.json');
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
@@ -17,7 +19,7 @@ const SHARED = {
     }
 
     try {
-      this.project.resolveSync('config/optional-features');
+      this.project.resolveSync('./config/optional-features');
       throw new SilentError('This command only works with `config/optional-features.json` currently. Pull request welcome.');
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
@@ -36,9 +38,17 @@ const SHARED = {
 
   _setFeature(name, value) {
     let configPath = this._ensureConfigFile();
-    let configJson = fs.readFileSync(configPath, { encoding: 'UTF-8' });
-    let config = JSON.parse(configJson);
-    config[name] = value;
+    let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
+    let config = {};
+
+    FEATURES.NAMES.forEach(feature => {
+      if (feature === name) {
+        config[feature] = value;
+      } else if(configJSON[feature] !== undefined) {
+        config[feature] = configJSON[feature];
+      }
+    });
+
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', { encoding: 'UTF-8' });
   }
 };
