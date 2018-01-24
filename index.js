@@ -17,19 +17,21 @@ module.exports = {
   },
 
   _loadFeatures() {
-    if (process.env.EMBER_OPTIONAL_FEATURES) {
-      return JSON.parse(process.env.EMBER_OPTIONAL_FEATURES);
-    }
+    let features = {};
 
     try {
-      return this.project.require('config/optional-features.json');
+      Object.assign(features, this.project.require('config/optional-features.json'));
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
     }
 
-    return {};
+    if (process.env.EMBER_OPTIONAL_FEATURES) {
+      Object.assign(features, JSON.parse(process.env.EMBER_OPTIONAL_FEATURES));
+    }
+
+    return features;
   },
 
   _validateFeatures(features) {

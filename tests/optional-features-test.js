@@ -114,9 +114,12 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
     process.env.EMBER_OPTIONAL_FEATURES = `{ "application-template-wrapper": false }`;
 
-    let addon = buildAddon({});
+    let addon = buildAddon({
+      'application-template-wrapper': true,
+      'template-only-component-wrapper': false
+    });
 
-    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting suppied value');
-    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), true, 'Expecting default value');
+    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
+    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), false, 'Expecting value from JSON');
   });
 });
