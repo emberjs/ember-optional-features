@@ -18,16 +18,12 @@ module.exports = {
   },
 
   _loadFeatures() {
-    try {
-      return this.project.require('config/optional-features.json');
-    } catch(err) {
-      if (err.code !== 'MODULE_NOT_FOUND') {
-        throw err;
-      }
+    if (process.env.EMBER_OPTIONAL_FEATURES) {
+      return JSON.parse(process.env.EMBER_OPTIONAL_FEATURES);
     }
 
     try {
-      return this.project.require('config/optional-features')();
+      return this.project.require('config/optional-features.json');
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
@@ -43,9 +39,9 @@ module.exports = {
 
     keys.forEach(key => {
       if (FEATURES.NAMES.indexOf(key) === -1) {
-        throw new SilentError(`Unknown feature "${key}" found in config/optional-features.js`);
+        throw new SilentError(`Unknown feature "${key}" found in config/optional-features.json`);
       } else if (typeof features[key] !== 'boolean') {
-        throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.js`);
+        throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.json`);
       }
     });
 
