@@ -89,7 +89,7 @@ QUnit.module('commands', hooks => {
           config: {
             'optional-features.json': strip(`
               {
-                "template-only-component-wrapper": false
+                "template-only-glimmer-components": true
               }
             `)
           }
@@ -101,7 +101,7 @@ QUnit.module('commands', hooks => {
           'optional-features.json': strip(`
             {
               "application-template-wrapper": ${testCase.expected},
-              "template-only-component-wrapper": false
+              "template-only-glimmer-components": true
             }
           `)
         }, 'it should have rewritten the config file with the appropiate flags');

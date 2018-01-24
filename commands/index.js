@@ -32,7 +32,7 @@ const SHARED = {
     let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
     let config = {};
 
-    FEATURES.NAMES.forEach(feature => {
+    Object.keys(FEATURES).forEach(feature => {
       if (feature === name) {
         config[feature] = value;
       } else if(configJSON[feature] !== undefined) {

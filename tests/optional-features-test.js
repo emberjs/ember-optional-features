@@ -61,13 +61,13 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it generates the correct config when features are passed', assert => {
     let addon = buildAddon({
       'application-template-wrapper': false,
-      'template-only-component-wrapper': false
+      'template-only-glimmer-components': true
     });
 
     let expected = {
       EmberENV: {
         "_APPLICATION_TEMPLATE_WRAPPER": false,
-        "_TEMPLATE_ONLY_COMPONENT_WRAPPER": false
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
       }
     };
 
@@ -77,12 +77,12 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it removes features that matches their default value', assert => {
     let addon = buildAddon({
       'application-template-wrapper': true,
-      'template-only-component-wrapper': false
+      'template-only-glimmer-components': true
     });
 
     let expected = {
       EmberENV: {
-        "_TEMPLATE_ONLY_COMPONENT_WRAPPER": false
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
       }
     };
 
@@ -92,7 +92,7 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it allows `null` to mean using the default value', assert => {
     let addon = buildAddon({
       'application-template-wrapper': null,
-      'template-only-component-wrapper': null
+      'template-only-glimmer-components': null
     });
 
     let expected = {
@@ -108,7 +108,7 @@ QUnit.module('@ember/optional-features', hooks => {
     });
 
     assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting suppied value');
-    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), true, 'Expecting default value');
+    assert.strictEqual(addon.isEnabled('template-only-glimmer-components'), false, 'Expecting default value');
   });
 
   QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
@@ -116,10 +116,10 @@ QUnit.module('@ember/optional-features', hooks => {
 
     let addon = buildAddon({
       'application-template-wrapper': true,
-      'template-only-component-wrapper': false
+      'template-only-glimmer-components': true
     });
 
     assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
-    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), false, 'Expecting value from JSON');
+    assert.strictEqual(addon.isEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
   });
 });
