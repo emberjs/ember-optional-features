@@ -13,8 +13,7 @@ module.exports = {
 
   init() {
     this._super && this._super.init.apply(this, arguments);
-    this._features = this._loadFeatures();
-    this._validateFeatures();
+    this._features = this._validateFeatures(this._loadFeatures());
   },
 
   _loadFeatures() {
@@ -33,25 +32,27 @@ module.exports = {
     return {};
   },
 
-  _validateFeatures() {
-    let features = this._features;
+  _validateFeatures(features) {
+    let validated = {};
     let keys = Object.keys(features);
 
     keys.forEach(key => {
       if (FEATURES.NAMES.indexOf(key) === -1) {
         throw new SilentError(`Unknown feature "${key}" found in config/optional-features.json`);
-      } else if (typeof features[key] !== 'boolean') {
+      } else if (features[key] !== null && typeof features[key] !== 'boolean') {
         throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.json`);
       }
     });
 
     FEATURES.NAMES.forEach(key => {
-      if (features[key] === undefined) {
-        features[key] = FEATURES.DEFAULTS[key];
+      if (typeof features[key] === 'boolean') {
+        validated[key] = features[key];
+      } else {
+        validated[key] = FEATURES.DEFAULTS[key];
       }
     });
 
-    this._features = features;
+    return validated;
   },
 
   isEnabled(name) {
@@ -60,11 +61,9 @@ module.exports = {
 
   config() {
     let EmberENV = {};
-
     let features = this._features;
-    let keys = Object.keys(features);
 
-    keys.forEach(key => {
+    FEATURES.NAMES.forEach(key => {
       let value = features[key];
 
       if (value !== FEATURES.DEFAULTS[key]) {

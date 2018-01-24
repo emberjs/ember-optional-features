@@ -89,6 +89,19 @@ QUnit.module('@ember/optional-features', hooks => {
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 
+  QUnit.test('it allows `null` to mean using the default value', assert => {
+    let addon = buildAddon({
+      'application-template-wrapper': null,
+      'template-only-component-wrapper': null
+    });
+
+    let expected = {
+      EmberENV: {}
+    };
+
+    assert.deepEqual(addon.config(), expected, 'Expecting correct config');
+  });
+
   QUnit.test('it can query the features with `isEnabled`', assert => {
     let addon = buildAddon({
       'application-template-wrapper': false
