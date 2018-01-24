@@ -18,15 +18,6 @@ const SHARED = {
       }
     }
 
-    try {
-      this.project.resolveSync('./config/optional-features');
-      throw new SilentError('This command only works with `config/optional-features.json` currently. Pull request welcome.');
-    } catch(err) {
-      if (err.code !== 'MODULE_NOT_FOUND') {
-        throw err;
-      }
-    }
-
     mkdirp.sync(path.join(this.project.root, 'config'));
 
     let configPath = path.join(this.project.root, 'config', 'optional-features.json');

@@ -12,8 +12,6 @@ class Project {
 
     if (path === 'config/optional-features.json' && typeof features === 'object') {
       return this.features;
-    } else if (path === 'config/optional-features' && typeof features === 'function') {
-      return this.features;
     } else {
       let error = new Error(`Invalid path: ${path}`);
       error.code = 'MODULE_NOT_FOUND';
@@ -29,7 +27,21 @@ function buildAddon(features) {
   return addon;
 }
 
-QUnit.module('@ember/optional-features', () => {
+QUnit.module('@ember/optional-features', hooks => {
+  let override;
+
+  hooks.beforeEach(() => {
+    override = process.env.EMBER_OPTIONAL_FEATURES;
+  });
+
+  hooks.afterEach(() => {
+    if (override === undefined) {
+      delete process.env.EMBER_OPTIONAL_FEATURES;
+    } else {
+      process.env.EMBER_OPTIONAL_FEATURES = override;
+    }
+  });
+
   QUnit.test('it throws on invalid key', assert => {
     assert.throws(() => buildAddon({ foo: true }), /Unknown feature "foo"/);
   });
@@ -77,6 +89,19 @@ QUnit.module('@ember/optional-features', () => {
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 
+  QUnit.test('it allows `null` to mean using the default value', assert => {
+    let addon = buildAddon({
+      'application-template-wrapper': null,
+      'template-only-component-wrapper': null
+    });
+
+    let expected = {
+      EmberENV: {}
+    };
+
+    assert.deepEqual(addon.config(), expected, 'Expecting correct config');
+  });
+
   QUnit.test('it can query the features with `isEnabled`', assert => {
     let addon = buildAddon({
       'application-template-wrapper': false
@@ -86,12 +111,15 @@ QUnit.module('@ember/optional-features', () => {
     assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), true, 'Expecting default value');
   });
 
-  QUnit.test('it allows the config to be a function', assert => {
-    let addon = buildAddon(() => {
-      return { 'application-template-wrapper': false };
+  QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
+    process.env.EMBER_OPTIONAL_FEATURES = `{ "application-template-wrapper": false }`;
+
+    let addon = buildAddon({
+      'application-template-wrapper': true,
+      'template-only-component-wrapper': false
     });
 
-    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting suppied value');
-    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), true, 'Expecting default value');
+    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
+    assert.strictEqual(addon.isEnabled('template-only-component-wrapper'), false, 'Expecting value from JSON');
   });
 });
