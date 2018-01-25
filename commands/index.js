@@ -2,11 +2,49 @@
 
 /* eslint-disable no-console */
 const SilentError = require('silent-error');
+const chalk = require('chalk');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
 const FEATURES = require('../features');
+
+const USAGE_MESSAGE = `Usage:
+
+  To list all available features, run ${chalk.bold('ember feature:list')}.
+  To enable a feature, run ${chalk.bold('ember feature:enable some-feature')}.
+  To disable a feature, run ${chalk.bold('ember feature:disable some-feature')}.
+`;
+
+const USAGE = {
+  name: 'feature',
+  description: 'Prints the USAGE.',
+  works: 'insideProject',
+  run() {
+    console.log(USAGE_MESSAGE);
+  }
+};
+
+const LIST_FEATURES = {
+  name: 'feature:list',
+  description: 'List all available features.',
+  works: 'insideProject',
+  run() {
+    console.log(USAGE_MESSAGE);
+    console.log('Available features:');
+
+    Object.keys(FEATURES).forEach(key => {
+      let feature = FEATURES[key];
+
+      console.log(`
+  ${chalk.bold(key)} ${chalk.cyan(`(Default: ${feature.default})`)}
+    ${feature.description}
+    ${chalk.gray("More information: " + chalk.underline(feature.url))}`);
+    });
+
+    console.log();
+  }
+};
 
 const SHARED = {
   _ensureConfigFile() {
@@ -32,7 +70,7 @@ const SHARED = {
     let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
     let config = {};
 
-    FEATURES.NAMES.forEach(feature => {
+    Object.keys(FEATURES).forEach(feature => {
       if (feature === name) {
         config[feature] = value;
       } else if(configJSON[feature] !== undefined) {
@@ -69,6 +107,8 @@ const DISABLE_FEATURE = Object.assign({
 }, SHARED);
 
 module.exports = {
-  "feature:enable": ENABLE_FEATURE,
-  "feature:disable": DISABLE_FEATURE
+  'feature': USAGE,
+  'feature:list': LIST_FEATURES,
+  'feature:enable': ENABLE_FEATURE,
+  'feature:disable': DISABLE_FEATURE
 }

@@ -9,6 +9,8 @@ const execa = require('execa');
 const mkdirp = require('mkdirp');
 const p = require('path').join;
 
+const FEATURES = require('../features');
+
 function run(/*command, ...args */) {
   return execa.call(undefined, 'ember', [].slice.call(arguments));
 }
@@ -62,6 +64,36 @@ QUnit.module('commands', hooks => {
     fs.unlinkSync(p(CWD, 'node_modules', '@ember', 'optional-features'));
   }));
 
+  function USAGE(command) {
+    QUnit.test(`it prints the USAGE message`, co.wrap(function *(assert) {
+      let result = yield run(command);
+
+      assert.ok(result.stdout.indexOf('Usage:') >= 0, 'it should print the USAGE message');
+    }));
+  }
+
+  QUnit.module('feature', () => {
+    USAGE('feature');
+  });
+
+  QUnit.module('feature:list', () => {
+    USAGE('feature:list');
+
+    QUnit.test(`it lists all the available features`, co.wrap(function *(assert) {
+      let result = yield run('feature:list');
+
+      assert.ok(result.stdout.indexOf('Available features:') >= 0, 'it list the available features');
+
+      Object.keys(FEATURES).forEach(key => {
+        let feature = FEATURES[key];
+
+        assert.ok(result.stdout.indexOf(`${key} (Default: ${feature.default}`) >= 0, `it should include ${key} and its default value`);
+        assert.ok(result.stdout.indexOf(feature.description) >= 0, `it should include the description for ${key}`);
+        assert.ok(result.stdout.indexOf(feature.url) >= 0, `it should include the URL for ${key}`);
+      });
+    }));
+  });
+
   [
     {
       command: 'feature:enable',
@@ -89,7 +121,7 @@ QUnit.module('commands', hooks => {
           config: {
             'optional-features.json': strip(`
               {
-                "template-only-component-wrapper": false
+                "template-only-glimmer-components": true
               }
             `)
           }
@@ -101,7 +133,7 @@ QUnit.module('commands', hooks => {
           'optional-features.json': strip(`
             {
               "application-template-wrapper": ${testCase.expected},
-              "template-only-component-wrapper": false
+              "template-only-glimmer-components": true
             }
           `)
         }, 'it should have rewritten the config file with the appropiate flags');

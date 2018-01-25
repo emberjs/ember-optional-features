@@ -39,18 +39,18 @@ module.exports = {
     let keys = Object.keys(features);
 
     keys.forEach(key => {
-      if (FEATURES.NAMES.indexOf(key) === -1) {
+      if (FEATURES[key] === undefined) {
         throw new SilentError(`Unknown feature "${key}" found in config/optional-features.json`);
       } else if (features[key] !== null && typeof features[key] !== 'boolean') {
         throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.json`);
       }
     });
 
-    FEATURES.NAMES.forEach(key => {
+    Object.keys(FEATURES).forEach(key => {
       if (typeof features[key] === 'boolean') {
         validated[key] = features[key];
       } else {
-        validated[key] = FEATURES.DEFAULTS[key];
+        validated[key] = FEATURES[key].default;
       }
     });
 
@@ -65,10 +65,11 @@ module.exports = {
     let EmberENV = {};
     let features = this._features;
 
-    FEATURES.NAMES.forEach(key => {
+    Object.keys(FEATURES).forEach(key => {
+      let defaultValue = FEATURES[key].default
       let value = features[key];
 
-      if (value !== FEATURES.DEFAULTS[key]) {
+      if (value !== defaultValue) {
         let KEY = `_${key.toUpperCase().replace(/-/g, '_')}`;
         EmberENV[KEY] = value;
       }
