@@ -8,27 +8,19 @@ const createTempDir = require('broccoli-test-helper').createTempDir;
 const execa = require('execa');
 const mkdirp = require('mkdirp');
 const p = require('path').join;
+const strip = require('../fmt').strip;
 
 const FEATURES = require('../features');
 
-function run(/*command, ...args */) {
-  return execa.call(undefined, 'ember', [].slice.call(arguments));
-}
+function run(/*command, ...args, options */) {
+  let args = [].slice.call(arguments);
+  let options = {};
 
-function strip(string) {
-  let lines = string.split('\n');
-
-  while (lines[0].trim() === '') {
-    lines.shift();
+  if (typeof args[args.length - 1] === 'object') {
+    options = args.pop();
   }
 
-  while (lines[lines.length - 1].trim() === '') {
-    lines.pop();
-  }
-
-  let leading = lines[0].match(/^ */)[0];
-
-  return lines.map(line => line.replace(leading, '')).join('\n') + '\n';
+  return execa('ember', args, options);
 }
 
 QUnit.module('commands', hooks => {
@@ -38,7 +30,7 @@ QUnit.module('commands', hooks => {
     project = yield createTempDir();
 
     project.write({
-      'package.json': strip(`
+      'package.json': strip`
         {
           "name": "dummy",
           "description": "",
@@ -48,7 +40,7 @@ QUnit.module('commands', hooks => {
             "ember-cli": "*"
           }
         }
-      `)
+      `
     });
 
     process.chdir(project.path());
@@ -105,14 +97,14 @@ QUnit.module('commands', hooks => {
   ].forEach(testCase => {
     QUnit.module(testCase.command, () => {
       QUnit.test('it creates the config file if one does not already exists', co.wrap(function *(assert) {
-        yield run(testCase.command, 'application-template-wrapper');
+        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('config'), {
-          'optional-features.json': strip(`
+          'optional-features.json': strip`
             {
               "application-template-wrapper": ${testCase.expected}
             }
-          `)
+          `
         }, 'it should have created the config file with the appropiate flags');
       }));
 
@@ -127,17 +119,176 @@ QUnit.module('commands', hooks => {
           }
         });
 
-        yield run(testCase.command, 'application-template-wrapper');
+        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('config'), {
-          'optional-features.json': strip(`
+          'optional-features.json': strip`
             {
               "application-template-wrapper": ${testCase.expected},
               "template-only-glimmer-components": true
             }
-          `)
+          `
         }, 'it should have rewritten the config file with the appropiate flags');
       }));
     });
+  });
+
+  QUnit.module('feature:disable application-template-wrapper', () => {
+    QUnit.test('it rewrites application.hbs when asked to', co.wrap(function *(assert) {
+      project.write({
+        app: {
+          templates: {
+            'application.hbs': strip`
+              <ul>
+                <li>One</li>
+                <li>Two</li>
+                <li>Three</li>
+              </ul>
+
+              {{outlet}}
+
+              <!-- wow -->
+            `
+          }
+        }
+      });
+
+      yield run('feature:disable', 'application-template-wrapper', { input: 'yes\n' });
+
+      assert.deepEqual(project.read('app/templates'), {
+        'application.hbs': strip`
+          <div class="ember-view">
+            <ul>
+              <li>One</li>
+              <li>Two</li>
+              <li>Three</li>
+            </ul>
+
+            {{outlet}}
+
+            <!-- wow -->
+          </div>
+        `
+      }, 'it should have rewritten the template with the wrapper');
+    }));
+
+    QUnit.test('it does not rewrite application.hbs when asked not to', co.wrap(function *(assert) {
+      project.write({
+        app: {
+          templates: {
+            'application.hbs': strip`
+              <ul>
+                <li>One</li>
+                <li>Two</li>
+                <li>Three</li>
+              </ul>
+
+              {{outlet}}
+
+              <!-- wow -->
+            `
+          }
+        }
+      });
+
+      yield run('feature:disable', 'application-template-wrapper', { input: 'no\n' });
+
+      assert.deepEqual(project.read('app/templates'), {
+        'application.hbs': strip`
+          <ul>
+            <li>One</li>
+            <li>Two</li>
+            <li>Three</li>
+          </ul>
+
+          {{outlet}}
+
+          <!-- wow -->
+        `
+      }, 'it should not have rewritten the template');
+    }));
+  });
+
+  QUnit.module('feature:enable template-only-glimmer-components', () => {
+    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
+      project.write({
+        app: {
+          components: {
+            'not-template-only.js': '/* do not touch */'
+          },
+          templates: {
+            'not-component.hbs': '<!-- route template -->',
+            components: {
+              'foo-bar.hbs': '<!-- foo-bar -->',
+              'another.hbs': '<!-- another -->',
+              'not-template-only.hbs': '<!-- not-template-only -->',
+              'also-not-component.txt': 'This is not a component file.'
+            }
+          }
+        }
+      });
+
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      let componentJS = strip(`
+        import Component from '@ember/component';
+
+        export default Component.extend({
+        });
+      `);
+
+      assert.deepEqual(project.read('app'), {
+        components: {
+          'foo-bar.js': componentJS,
+          'another.js': componentJS,
+          'not-template-only.js': '/* do not touch */'
+        },
+        templates: {
+          'not-component.hbs': '<!-- route template -->',
+          components: {
+            'foo-bar.hbs': '<!-- foo-bar -->',
+            'another.hbs': '<!-- another -->',
+            'not-template-only.hbs': '<!-- not-template-only -->',
+            'also-not-component.txt': 'This is not a component file.'
+          }
+        }
+      }, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
+      project.write({
+        app: {
+          components: {
+            'not-template-only.js': '/* do not touch */'
+          },
+          templates: {
+            'not-component.hbs': '<!-- route template -->',
+            components: {
+              'foo-bar.hbs': '<!-- foo-bar -->',
+              'another.hbs': '<!-- another -->',
+              'not-template-only.hbs': '<!-- not-template-only -->',
+              'also-not-component.txt': 'This is not a component file.'
+            }
+          }
+        }
+      });
+
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
+
+      assert.deepEqual(project.read('app'), {
+        components: {
+          'not-template-only.js': '/* do not touch */'
+        },
+        templates: {
+          'not-component.hbs': '<!-- route template -->',
+          components: {
+            'foo-bar.hbs': '<!-- foo-bar -->',
+            'another.hbs': '<!-- another -->',
+            'not-template-only.hbs': '<!-- not-template-only -->',
+            'also-not-component.txt': 'This is not a component file.'
+          }
+        }
+      }, 'it should have generated the component JS files');
+    }));
   });
 });
