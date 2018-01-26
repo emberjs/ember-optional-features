@@ -37,7 +37,8 @@ QUnit.module('commands', hooks => {
           "version": "0.0.0",
           "devDependencies": {
             "@ember/optional-features": "*",
-            "ember-cli": "*"
+            "ember-cli": "*",
+            "ember-source": "*"
           }
         }
       `
@@ -48,12 +49,22 @@ QUnit.module('commands', hooks => {
     mkdirp.sync(p(CWD, 'node_modules', '@ember'));
     fs.symlinkSync(p(CWD, 'node_modules'), p(project.path(), 'node_modules'));
     fs.symlinkSync(CWD, p(CWD, 'node_modules', '@ember', 'optional-features'));
+
+    mkdirp.sync(p(CWD, 'node_modules', 'ember-source'));
+    fs.writeFileSync(p(CWD, 'node_modules', 'ember-source', 'package.json'), strip`
+      {
+        "name": "ember-source",
+        "description": "",
+        "version": "9.9.9"
+      }
+    `, { encoding: 'UTF-8' });
   }));
 
   hooks.afterEach(co.wrap(function *() {
     process.chdir(CWD);
     yield project.dispose();
     fs.unlinkSync(p(CWD, 'node_modules', '@ember', 'optional-features'));
+    fs.unlinkSync(p(CWD, 'node_modules', 'ember-source', 'package.json'));
   }));
 
   function USAGE(command) {
@@ -106,6 +117,34 @@ QUnit.module('commands', hooks => {
             }
           `
         }, 'it should have created the config file with the appropiate flags');
+      }));
+
+      QUnit.test('it errors on invalid features', co.wrap(function *(assert) {
+        let result = yield run(testCase.command, 'foo-bar');
+
+        assert.ok(result.stdout.indexOf('Error:') >= 0, 'it should print an error');
+        assert.ok(result.stdout.indexOf('foo-bar is not a valid feature') >= 0, 'it should print an error');
+      }));
+
+      QUnit.test('it errors on invalid ember version', co.wrap(function *(assert) {
+        project.write({
+          'node_modules': {
+            'ember-source': {
+              'package.json': strip`
+                {
+                  "name": "ember-source",
+                  "description": "",
+                  "version": "3.0.0"
+                }
+              `
+            }
+          }
+        });
+
+        let result = yield run(testCase.command, 'application-template-wrapper');
+
+        assert.ok(result.stdout.indexOf('Error:') >= 0, 'it should print an error');
+        assert.ok(result.stdout.indexOf('application-template-wrapper is only available in Ember 3.1.0 or above') >= 0, 'it should print an error');
       }));
 
       QUnit.test('it rewrites the config file if one already exists', co.wrap(function *(assert) {

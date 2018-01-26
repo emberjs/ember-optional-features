@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use strict';
 
 const chalk = require('chalk');
@@ -17,10 +18,14 @@ const ComponentFile = strip`
   });
 `;
 
+/* This forces strip`` to start counting the indentaiton */
+const INDENT_START = '';
+
 module.exports = {
   description: 'Use Glimmer Components semantics for template-only components (component templates with no corresponding .js file).',
   url: 'https://github.com/emberjs/rfcs/pull/278',
   default: false,
+  since: '3.1.0',
   callback: co.wrap(function *(project, value) {
     if (value !== true) {
       return;
@@ -81,7 +86,7 @@ module.exports = {
 
     for (let i=0; i<templates.length; i++) {
       console.log(strip`
-        ${''}
+        ${INDENT_START}
           - ${chalk.underline(templates[i])}
             ${chalk.gray(`(Recommendation: add ${chalk.cyan.underline(components[i])})`)}
       `);

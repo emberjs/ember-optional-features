@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 'use strict';
 
-/* eslint-disable no-console */
-const SilentError = require('silent-error');
+const VersionChecker = require('ember-cli-version-checker');
+
 const chalk = require('chalk');
 const co = require('co');
 const fs = require('fs');
@@ -19,38 +20,13 @@ const USAGE_MESSAGE = strip`
     To disable a feature, run ${chalk.bold('ember feature:disable some-feature')}.
 `;
 
-const USAGE = {
-  name: 'feature',
-  description: 'Prints the USAGE.',
-  works: 'insideProject',
-  run() {
-    console.log(USAGE_MESSAGE);
-  }
-};
-
-const LIST_FEATURES = {
-  name: 'feature:list',
-  description: 'List all available features.',
-  works: 'insideProject',
-  run() {
-    console.log(USAGE_MESSAGE);
-    console.log('Available features:');
-
-    Object.keys(FEATURES).forEach(key => {
-      let feature = FEATURES[key];
-
-      console.log(strip`
-        ${''}
-          ${chalk.bold(key)} ${chalk.cyan(`(Default: ${feature.default})`)}
-             ${feature.description}
-             ${chalk.gray(`More information: ${chalk.underline(feature.url)}`)}
-      `);
-    });
-  }
-};
-
 const SHARED = {
   // TODO: promisify the sync code below
+
+  _isFeatureAvailable(feature) {
+    let checker = new VersionChecker(this).forEmber();
+    return checker.gte(`${feature.since}-beta.1`);
+  },
 
   _ensureConfigFile: co.wrap(function *() {
     try {
@@ -81,6 +57,11 @@ const SHARED = {
     let configPath = yield this._ensureConfigFile();
     let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
 
+    if (!this._isFeatureAvailable(feature)) {
+      console.log(chalk.red(`Error: ${chalk.bold(name)} is only available in Ember ${feature.since} or above.`));
+      return;
+    }
+
     if (typeof feature.callback === 'function') {
       yield feature.callback(this.project, value);
     }
@@ -102,6 +83,52 @@ const SHARED = {
     console.log(chalk.green(`${state} ${chalk.bold(name)}. Be sure to commit ${chalk.underline('config/optional-features.json')} to source control!`));
   })
 };
+
+const USAGE = Object.assign({
+  name: 'feature',
+  description: 'Prints the USAGE.',
+  works: 'insideProject',
+  run() {
+    console.log(USAGE_MESSAGE);
+  }
+}, SHARED);
+
+/* This forces strip`` to start counting the indentaiton */
+const INDENT_START = '';
+
+const LIST_FEATURES = Object.assign({
+  name: 'feature:list',
+  description: 'List all available features.',
+  works: 'insideProject',
+  run() {
+    console.log(USAGE_MESSAGE);
+    console.log('Available features:');
+
+    let hasFeatures = false;
+
+    Object.keys(FEATURES).forEach(key => {
+      let feature = FEATURES[key];
+
+      if (this._isFeatureAvailable(feature)) {
+        console.log(strip`
+          ${INDENT_START}
+            ${chalk.bold(key)} ${chalk.cyan(`(Default: ${feature.default})`)}
+              ${feature.description}
+              ${chalk.gray(`More information: ${chalk.underline(feature.url)}`)}
+        `);
+
+        hasFeatures = true;
+      }
+    });
+
+    if (!hasFeatures) {
+      console.log(chalk.gray(strip`
+        ${INDENT_START}
+          No optional features available for your current Ember version.
+      `));
+    }
+  }
+}, SHARED);
 
 const ENABLE_FEATURE = Object.assign({
   name: 'feature:enable',

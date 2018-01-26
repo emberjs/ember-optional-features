@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use strict';
 
 const chalk = require('chalk');
@@ -12,6 +13,7 @@ module.exports = {
   description: 'Wrap the top-level application template (application.hbs) with a \`<div class="ember-view">\` element.',
   url: 'https://github.com/emberjs/rfcs/pull/280',
   default: true,
+  since: '3.1.0',
   callback: co.wrap(function *(project, value) {
     if (value !== false) {
       return;

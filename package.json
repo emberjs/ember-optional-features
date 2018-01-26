@@ -29,6 +29,7 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "co": "^4.6.0",
+    "ember-cli-version-checker": "^2.1.0",
     "glob": "^7.1.2",
     "inquirer": "^3.3.0",
     "mkdirp": "^0.5.1",
