@@ -114,14 +114,15 @@ const LIST_FEATURES = Object.assign({
           ${INDENT_START}
             ${chalk.bold(key)} ${chalk.cyan(`(Default: ${feature.default})`)}
               ${feature.description}
-              ${chalk.gray(`More information: ${chalk.underline(feature.url)}`)}
-        `);
+              ${chalk.gray(`More information: ${chalk.underline(feature.url)}`)}`);
 
         hasFeatures = true;
       }
     });
 
-    if (!hasFeatures) {
+    if (hasFeatures) {
+      console.log();
+    } else {
       console.log(chalk.gray(strip`
         ${INDENT_START}
           No optional features available for your current Ember version.
