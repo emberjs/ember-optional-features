@@ -4,23 +4,40 @@ This README outlines the details of collaborating on this Ember addon.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd @ember/optional-features`
-* `yarn install`
+```bash
+ember install @ember/optional-features
+```
 
-## Running
+## Usage
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+### List available features
+Features will only be available in canary builds of ember-source. To list all available features run:
 
-## Running Tests
+```bash
+ember feature:list
+```
 
-* `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+### Enable/disable features
+To enable a feature, run:
 
-## Building
+```bash
+ember feature:enable some-feature
+```
 
-* `ember build`
+Similarly, if you want to disable a feature, you can run:
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+```bash
+ember feature:disable some-feature
+```
+
+### Installing ember-source canary
+
+You will first need to go find the latest sha for Ember on the master branch, which you can copy from [here](https://github.com/emberjs/ember.js/commits/master).
+
+Then, you need to run:
+
+```bash
+yarn add -D ember-source@http://builds.emberjs.com/canary/shas/<your-sha-here>.tgz
+```
+
+Of course, you will want to replace `<your-sha-here>` with the sha you copied.
