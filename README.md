@@ -1,6 +1,6 @@
 # @ember/optional-features
 
-This README outlines the details of collaborating on this Ember addon.
+This addon allows you to easily enable/disable optional features in ember-source canary. It is intended for use with apps *only* not addons.
 
 ## Installation
 
@@ -11,6 +11,7 @@ ember install @ember/optional-features
 ## Usage
 
 ### List available features
+
 Features will only be available in canary builds of ember-source. To list all available features run:
 
 ```bash
@@ -18,6 +19,7 @@ ember feature:list
 ```
 
 ### Enable/disable features
+
 To enable a feature, run:
 
 ```bash
