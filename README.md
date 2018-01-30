@@ -1,26 +1,33 @@
 # @ember/optional-features
 
-This README outlines the details of collaborating on this Ember addon.
+This addon allows you to easily enable/disable optional features in ember-source. To clarify what we mean by optional, these are features that will be opt-in/opt-out and optional for the forseeable future, not features that will be enabled by default. It is intended for use with apps *only* not addons.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd @ember/optional-features`
-* `yarn install`
+```bash
+ember install @ember/optional-features
+```
 
-## Running
+## Usage
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+### List available features
 
-## Running Tests
+Features will only be available in versions of ember-source that included them. To list all available features run:
 
-* `yarn test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+```bash
+ember feature:list
+```
 
-## Building
+### Enable/disable features
 
-* `ember build`
+To enable a feature, run:
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+```bash
+ember feature:enable some-feature
+```
+
+Similarly, if you want to disable a feature, you can run:
+
+```bash
+ember feature:disable some-feature
+```
