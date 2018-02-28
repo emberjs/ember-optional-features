@@ -20,7 +20,7 @@ module.exports = {
     let features = {};
 
     try {
-      Object.assign(features, this.project.require('config/optional-features.json'));
+      Object.assign(features, this.project.require('./config/optional-features.json'));
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
