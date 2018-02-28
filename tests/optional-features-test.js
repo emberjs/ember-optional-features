@@ -10,7 +10,7 @@ class Project {
   require(path) {
     let features = this.features;
 
-    if (path === 'config/optional-features.json' && typeof features === 'object') {
+    if (path === './config/optional-features.json' && typeof features === 'object') {
       return this.features;
     } else {
       let error = new Error(`Invalid path: ${path}`);
