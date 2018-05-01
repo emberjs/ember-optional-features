@@ -1,6 +1,6 @@
 # @ember/optional-features
 
-This addon allows you to easily enable/disable optional features in ember-source. To clarify what we mean by optional, these are features that will be opt-in/opt-out and optional for the forseeable future, not features that will be enabled by default. It is intended for use with apps *only* not addons.
+This addon allows you to easily enable/disable optional features in ember-source. To clarify what we mean by optional, these are features that will be opt-in/opt-out and optional for the foreseeable future, not features that will be enabled by default. It is intended for use with apps *only* not addons.
 
 ## Installation
 
