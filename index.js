@@ -37,7 +37,6 @@ module.exports = {
   _validateFeatures(features) {
     let validated = {};
     let keys = Object.keys(features);
-
     keys.forEach(key => {
       if (FEATURES[key] === undefined) {
         throw new SilentError(`Unknown feature "${key}" found in config/optional-features.json`);

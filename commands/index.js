@@ -56,7 +56,6 @@ const SHARED = {
 
     let configPath = yield this._ensureConfigFile();
     let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
-
     if (!this._isFeatureAvailable(feature)) {
       console.log(chalk.red(`Error: ${chalk.bold(name)} is only available in Ember ${feature.since} or above.`));
       return;

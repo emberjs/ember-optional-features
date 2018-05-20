@@ -61,7 +61,8 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it generates the correct config when features are passed', assert => {
     let addon = buildAddon({
       'application-template-wrapper': false,
-      'template-only-glimmer-components': true
+      'template-only-glimmer-components': true,
+      'jquery-integration': true
     });
 
     let expected = {
@@ -77,7 +78,8 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it removes features that matches their default value', assert => {
     let addon = buildAddon({
       'application-template-wrapper': true,
-      'template-only-glimmer-components': true
+      'template-only-glimmer-components': true,
+      'jquery-integration': true
     });
 
     let expected = {
@@ -92,7 +94,8 @@ QUnit.module('@ember/optional-features', hooks => {
   QUnit.test('it allows `null` to mean using the default value', assert => {
     let addon = buildAddon({
       'application-template-wrapper': null,
-      'template-only-glimmer-components': null
+      'template-only-glimmer-components': null,
+      'jquery-integration': null
     });
 
     let expected = {
@@ -116,10 +119,12 @@ QUnit.module('@ember/optional-features', hooks => {
 
     let addon = buildAddon({
       'application-template-wrapper': true,
-      'template-only-glimmer-components': true
+      'template-only-glimmer-components': true,
+      'jquery-integration': true
     });
 
     assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
     assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
+    assert.strictEqual(addon.isFeatureEnabled('jquery-integration'), true, 'Expecting value from JSON');
   });
 });
