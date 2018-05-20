@@ -57,7 +57,7 @@ module.exports = {
     return validated;
   },
 
-  isEnabled(name) {
+  isFeatureEnabled(name) {
     return this._features[name];
   },
 
