@@ -24,7 +24,7 @@ const SHARED = {
   // TODO: promisify the sync code below
 
   _isFeatureAvailable(feature) {
-    let checker = new VersionChecker(this).forEmber();
+    let checker = new VersionChecker(this.project).forEmber();
     return checker.gte(`${feature.since}-beta.1`);
   },
 
@@ -51,7 +51,7 @@ const SHARED = {
 
     if (feature === undefined) {
       console.log(chalk.red(`Error: ${chalk.bold(name)} is not a valid feature.\n`));
-      return LIST_FEATURES.run();
+      return LIST_FEATURES.run.apply(this);
     }
 
     let configPath = yield this._ensureConfigFile();

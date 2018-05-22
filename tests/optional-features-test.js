@@ -102,13 +102,13 @@ QUnit.module('@ember/optional-features', hooks => {
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 
-  QUnit.test('it can query the features with `isEnabled`', assert => {
+  QUnit.test('it can query the features with `isFeatureEnabled`', assert => {
     let addon = buildAddon({
       'application-template-wrapper': false
     });
 
-    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting suppied value');
-    assert.strictEqual(addon.isEnabled('template-only-glimmer-components'), false, 'Expecting default value');
+    assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting suppied value');
+    assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), false, 'Expecting default value');
   });
 
   QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
@@ -119,7 +119,7 @@ QUnit.module('@ember/optional-features', hooks => {
       'template-only-glimmer-components': true
     });
 
-    assert.strictEqual(addon.isEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
-    assert.strictEqual(addon.isEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
+    assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
+    assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
   });
 });
