@@ -253,7 +253,8 @@ QUnit.module('commands', hooks => {
       project.write({
         app: {
           components: {
-            'not-template-only.js': '/* do not touch */'
+            'not-template-only.js': '/* do not touch */',
+            'ts-not-template-only.ts': '/* do not touch */'
           },
           templates: {
             'not-component.hbs': '<!-- route template -->',
@@ -261,6 +262,7 @@ QUnit.module('commands', hooks => {
               'foo-bar.hbs': '<!-- foo-bar -->',
               'another.hbs': '<!-- another -->',
               'not-template-only.hbs': '<!-- not-template-only -->',
+              'ts-not-template-only.hbs': '<!-- not-template-only -->',
               'also-not-component.txt': 'This is not a component file.'
             }
           }
@@ -280,7 +282,8 @@ QUnit.module('commands', hooks => {
         components: {
           'foo-bar.js': componentJS,
           'another.js': componentJS,
-          'not-template-only.js': '/* do not touch */'
+          'not-template-only.js': '/* do not touch */',
+          'ts-not-template-only.ts': '/* do not touch */'
         },
         templates: {
           'not-component.hbs': '<!-- route template -->',
@@ -288,6 +291,7 @@ QUnit.module('commands', hooks => {
             'foo-bar.hbs': '<!-- foo-bar -->',
             'another.hbs': '<!-- another -->',
             'not-template-only.hbs': '<!-- not-template-only -->',
+            'ts-not-template-only.hbs': '<!-- not-template-only -->',
             'also-not-component.txt': 'This is not a component file.'
           }
         }
