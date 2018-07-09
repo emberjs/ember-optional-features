@@ -47,14 +47,17 @@ module.exports = {
       let templateCandidates = yield p(glob)('**/*.hbs', { cwd: templatesRoot });
 
       let componentsRoot = path.join(root, 'app/components');
-      let componentCandidates = yield p(glob)('**/*.js', { cwd: componentsRoot });
+      let componentCandidates = yield p(glob)('**/*.@(j|t)s', { cwd: componentsRoot });
 
       templateCandidates.forEach(templatePath => {
-        let componentPath = templatePath.replace(/\.hbs$/, '.js');
+        let jsPath = templatePath.replace(/\.hbs$/, '.js');
+        let tsPath = templatePath.replace(/\.hbs$/, '.ts');
 
-        if (componentCandidates.indexOf(componentPath) === -1) {
+        let foundJs = componentCandidates.indexOf(jsPath) >= 0;
+        let foundTs = componentCandidates.indexOf(tsPath) >= 0;
+        if (!foundJs && !foundTs) {
           templates.push(path.join('app/templates/components', templatePath));
-          components.push(path.join('app/components', componentPath));
+          components.push(path.join('app/components', jsPath)); // Always offer to create JS
         }
       });
     }
