@@ -1,37 +1,38 @@
 'use strict';
 
 const Addon = require('..');
-
-class Project {
-  constructor(features) {
-    this.features = features;
-  }
-
-  require(path) {
-    let features = this.features;
-
-    if (path === './config/optional-features.json' && typeof features === 'object') {
-      return this.features;
-    } else {
-      let error = new Error(`Invalid path: ${path}`);
-      error.code = 'MODULE_NOT_FOUND';
-      throw error;
-    }
-  }
-}
-
-function buildAddon(features) {
-  let addon = Object.create(Addon);
-  addon.project = new Project(features);
-  addon.init();
-  return addon;
-}
+const Project = require('ember-cli/lib/models/project');
+const createTempDir = require('broccoli-test-helper').createTempDir;
 
 QUnit.module('@ember/optional-features', hooks => {
-  let override;
+  let override, projectRoot;
+
+  function buildAddon(features) {
+    projectRoot.write({
+      'package.json': JSON.stringify(
+        {
+          name: 'test-project',
+          devDependencies: {
+            'ember-cli': '*',
+          }
+        },
+        null,
+        2
+      ),
+      config: {
+        'optional-features.json': JSON.stringify(features, null, 2),
+      }
+    });
+
+    let addon = Object.create(Addon);
+    addon.project = Project.closestSync(projectRoot.path());
+    addon.init();
+    return addon;
+  }
 
   hooks.beforeEach(() => {
     override = process.env.EMBER_OPTIONAL_FEATURES;
+    return createTempDir().then(tmpDir => projectRoot = tmpDir);
   });
 
   hooks.afterEach(() => {
@@ -40,6 +41,8 @@ QUnit.module('@ember/optional-features', hooks => {
     } else {
       process.env.EMBER_OPTIONAL_FEATURES = override;
     }
+
+    return projectRoot.dispose();
   });
 
   QUnit.test('it throws on invalid key', assert => {
