@@ -16,11 +16,18 @@ module.exports = {
     this._features = this._validateFeatures(this._loadFeatures());
   },
 
+
   _loadFeatures() {
     let features = {};
 
+    let configDir = 'config';
+
+    if (this.project.pkg['ember-addon'] && this.project.pkg['ember-addon']['configPath']) {
+      configDir = this.project.pkg['ember-addon']['configPath'];
+    }
+
     try {
-      Object.assign(features, this.project.require('./config/optional-features.json'));
+      Object.assign(features, this.project.require(`./${configDir}/optional-features.json`));
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
