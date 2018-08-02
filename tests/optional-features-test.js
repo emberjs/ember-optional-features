@@ -4,25 +4,21 @@ const Addon = require('..');
 const Project = require('ember-cli/lib/models/project');
 const createTempDir = require('broccoli-test-helper').createTempDir;
 
+function stringify(obj) {
+  return JSON.stringify(obj, null, 2);
+}
+
 QUnit.module('@ember/optional-features', hooks => {
   let override, projectRoot;
 
   function buildAddon(features) {
-    projectRoot.write({
-      'package.json': JSON.stringify(
-        {
-          name: 'test-project',
-          devDependencies: {
-            'ember-cli': '*',
-          }
-        },
-        null,
-        2
-      ),
-      config: {
-        'optional-features.json': JSON.stringify(features, null, 2),
-      }
-    });
+    if (features) {
+      projectRoot.write({
+        config: {
+          'optional-features.json': stringify(features),
+        }
+      });
+    }
 
     let addon = Object.create(Addon);
     addon.project = Project.closestSync(projectRoot.path());
@@ -32,7 +28,18 @@ QUnit.module('@ember/optional-features', hooks => {
 
   hooks.beforeEach(() => {
     override = process.env.EMBER_OPTIONAL_FEATURES;
-    return createTempDir().then(tmpDir => projectRoot = tmpDir);
+    return createTempDir().then(tmpDir => {
+      projectRoot = tmpDir;
+
+      projectRoot.write({
+        'package.json': stringify({
+          name: 'test-project',
+          devDependencies: {
+            'ember-cli': '*',
+          }
+        }),
+      });
+    });
   });
 
   hooks.afterEach(() => {
@@ -129,5 +136,41 @@ QUnit.module('@ember/optional-features', hooks => {
     assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
     assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
     assert.strictEqual(addon.isFeatureEnabled('jquery-integration'), true, 'Expecting value from JSON');
+  });
+
+  QUnit.test('can provide custom config path', assert => {
+    projectRoot.write({
+      'package.json': stringify({
+        name: 'test-project',
+        devDependencies: {
+          'ember-cli': '*',
+        },
+        'ember-addon': {
+          configPath: 'tests/dummy/config',
+        }
+      }),
+      tests: {
+        dummy: {
+          config: {
+            'optional-features.json': stringify({
+              'application-template-wrapper': false,
+              'template-only-glimmer-components': true,
+              'jquery-integration': true
+            }),
+          }
+        }
+      }
+    });
+
+    let addon = buildAddon();
+
+    let expected = {
+      EmberENV: {
+        "_APPLICATION_TEMPLATE_WRAPPER": false,
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
+      }
+    };
+
+    assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 });
