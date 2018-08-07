@@ -1,10 +1,10 @@
 'use strict';
 
-const fmt = require('../fmt');
-const join = fmt.join;
-const strip = fmt.strip;
+const utils = require('../utils');
+const join = utils.join;
+const strip = utils.strip;
 
-QUnit.module('fmt', () => {
+QUnit.module('utils', () => {
   QUnit.test('join', assert => {
     assert.equal(join``, ``);
     assert.equal(join`hello world`, `hello world`);

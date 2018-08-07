@@ -7,7 +7,7 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const p = require('util.promisify');
 const path = require('path');
-const strip = require('../fmt').strip;
+const strip = require('../utils').strip;
 
 module.exports = {
   description: 'Wrap the top-level application template (application.hbs) with a \`<div class="ember-view">\` element.',

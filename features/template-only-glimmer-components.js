@@ -9,7 +9,7 @@ const glob = require('glob');
 const mkdirp = require('mkdirp');
 const p = require('util.promisify');
 const path = require('path');
-const strip = require('../fmt').strip;
+const strip = require('../utils').strip;
 
 const ComponentFile = strip`
   import Component from '@ember/component';

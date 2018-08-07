@@ -1,5 +1,15 @@
 'use strict';
 
+function getConfigPath(project) {
+  let configDir = 'config';
+
+  if (project.pkg['ember-addon'] && project.pkg['ember-addon']['configPath']) {
+    configDir = project.pkg['ember-addon']['configPath'];
+  }
+
+  return `./${configDir}/optional-features.json`;
+}
+
 function join(strings /*, ...args */) {
   let parts = [];
 
@@ -36,6 +46,7 @@ function strip(/* strings, ...args */) {
 }
 
 module.exports = {
-  join: join,
-  strip: strip
+  getConfigPath,
+  join,
+  strip
 };
