@@ -8,7 +8,8 @@ const co = require('co');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
-const strip = require('../fmt').strip;
+const strip = require('../utils').strip;
+const getConfigPath = require('../utils').getConfigPath;
 
 const FEATURES = require('../features');
 
@@ -37,9 +38,9 @@ const SHARED = {
       }
     }
 
-    mkdirp.sync(path.join(this.project.root, 'config'));
+    let configPath = getConfigPath(this.project);
 
-    let configPath = path.join(this.project.root, 'config', 'optional-features.json');
+    mkdirp.sync(path.join(this.project.root, path.dirname(configPath)));
 
     fs.writeFileSync(configPath, '{}', { encoding: 'UTF-8' });
 

@@ -3,6 +3,7 @@
 const SilentError = require('silent-error');
 
 const FEATURES = require('./features');
+const getConfigPath = require('./utils').getConfigPath;
 
 module.exports = {
   name: '@ember/optional-features',
@@ -20,14 +21,10 @@ module.exports = {
   _loadFeatures() {
     let features = {};
 
-    let configDir = 'config';
-
-    if (this.project.pkg['ember-addon'] && this.project.pkg['ember-addon']['configPath']) {
-      configDir = this.project.pkg['ember-addon']['configPath'];
-    }
+    let configPath = getConfigPath(this.project);
 
     try {
-      Object.assign(features, this.project.require(`./${configDir}/optional-features.json`));
+      Object.assign(features, this.project.require(configPath));
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;

@@ -8,7 +8,7 @@ const createTempDir = require('broccoli-test-helper').createTempDir;
 const execa = require('execa');
 const mkdirp = require('mkdirp');
 const p = require('path').join;
-const strip = require('../fmt').strip;
+const strip = require('../utils').strip;
 
 const FEATURES = require('../features');
 
@@ -107,6 +107,36 @@ QUnit.module('commands', hooks => {
     }
   ].forEach(testCase => {
     QUnit.module(testCase.command, () => {
+      QUnit.test('it honors customized config path', co.wrap(function *(assert) {
+        project.write({
+          'package.json': strip`
+            {
+              "name": "dummy",
+              "description": "",
+              "version": "0.0.0",
+              "devDependencies": {
+                "@ember/optional-features": "*",
+                "ember-cli": "*",
+                "ember-source": "*"
+              },
+              "ember-addon": {
+                "configPath": "foo/bar"
+              }
+            }
+          `
+        });
+
+        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+
+        assert.deepEqual(project.read('foo/bar'), {
+          'optional-features.json': strip`
+            {
+              "application-template-wrapper": ${testCase.expected}
+            }
+          `
+        }, 'it should have created the config file with the appropiate flags');
+      }));
+
       QUnit.test('it creates the config file if one does not already exists', co.wrap(function *(assert) {
         yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
