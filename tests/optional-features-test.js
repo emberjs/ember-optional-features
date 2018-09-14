@@ -78,14 +78,15 @@ QUnit.module('@ember/optional-features', hooks => {
     let expected = {
       EmberENV: {
         "_APPLICATION_TEMPLATE_WRAPPER": false,
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
+        "_JQUERY_INTEGRATION": true
       }
     };
 
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 
-  QUnit.test('it removes features that matches their default value', assert => {
+  QUnit.test('it does not remove features that matches their default value', assert => {
     let addon = buildAddon({
       'application-template-wrapper': true,
       'template-only-glimmer-components': true,
@@ -94,7 +95,9 @@ QUnit.module('@ember/optional-features', hooks => {
 
     let expected = {
       EmberENV: {
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
+        "_APPLICATION_TEMPLATE_WRAPPER": true,
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
+        "_JQUERY_INTEGRATION": true
       }
     };
 
@@ -167,7 +170,8 @@ QUnit.module('@ember/optional-features', hooks => {
     let expected = {
       EmberENV: {
         "_APPLICATION_TEMPLATE_WRAPPER": false,
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true
+        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
+        "_JQUERY_INTEGRATION": true
       }
     };
 

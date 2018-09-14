@@ -17,7 +17,6 @@ module.exports = {
     this._features = this._validateFeatures(this._loadFeatures());
   },
 
-
   _loadFeatures() {
     let features = {};
 
@@ -52,8 +51,6 @@ module.exports = {
     Object.keys(FEATURES).forEach(key => {
       if (typeof features[key] === 'boolean') {
         validated[key] = features[key];
-      } else {
-        validated[key] = FEATURES[key].default;
       }
     });
 
@@ -61,7 +58,8 @@ module.exports = {
   },
 
   isFeatureEnabled(name) {
-    return this._features[name];
+    let value = this._features[name];
+    return  value !== undefined ? value : FEATURES[name].default;
   },
 
   config() {
@@ -69,13 +67,13 @@ module.exports = {
     let features = this._features;
 
     Object.keys(FEATURES).forEach(key => {
-      let defaultValue = FEATURES[key].default
       let value = features[key];
 
-      if (value !== defaultValue) {
+      if (value !== undefined) {
         let KEY = `_${key.toUpperCase().replace(/-/g, '_')}`;
         EmberENV[KEY] = value;
       }
+
     });
 
     return { EmberENV };
