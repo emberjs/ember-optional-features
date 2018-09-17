@@ -5,6 +5,10 @@
   "keywords": [
     "ember-addon"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emberjs/ember-optional-features.git"
+  },
   "license": "MIT",
   "contributors": [
     "Godfrey Chan <godfreykfc@gmail.com>"
@@ -13,18 +17,11 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/emberjs/ember-optional-features.git"
-  },
   "scripts": {
     "build": "ember build",
     "lint:js": "eslint ./*.js addon addon-test-support app config lib server test-support tests",
     "start": "ember serve",
     "test": "qunit tests/**/*-test.js"
-  },
-  "engines": {
-    "node": "6.* || 8.* || >= 10.*"
   },
   "dependencies": {
     "chalk": "^2.3.0",
@@ -45,5 +42,8 @@
     "execa": "^0.8.0",
     "prettier": "^1.10.1",
     "qunit": "^2.5.0"
+  },
+  "engines": {
+    "node": "6.* || 8.* || >= 10.*"
   }
 }
