@@ -10,7 +10,9 @@ ember install @ember/optional-features
 
 ## Usage
 
-### List available features
+### From command-line
+
+#### List available features
 
 Features will only be available in versions of ember-source that included them. To list all available features run:
 
@@ -18,7 +20,7 @@ Features will only be available in versions of ember-source that included them. 
 ember feature:list
 ```
 
-### Enable/disable features
+#### Enable/disable features
 
 To enable a feature, run:
 
@@ -31,3 +33,20 @@ Similarly, if you want to disable a feature, you can run:
 ```bash
 ember feature:disable some-feature
 ```
+
+### At build-time (from an addon)
+
+This addon exposes a build-time method called `isFeatureEnabled`, which can be called from an addon's `index.js`, e.g.:
+
+```javascript
+included() {
+  let optionalFeatues = this.addons.find(a => a.name === '@ember/optional-features');
+  if (optionalFeatures.isFeatureEnabled('jquery-integration') {
+    // ...
+  }
+}
+```
+
+### At run-time (from an app or addon)
+
+WIP -- there does not yet exist a public API for accessing the state of optional features at runtime. [This](https://github.com/pzuraq/ember-compatibility-helpers/issues/27) issue is tracking it.
