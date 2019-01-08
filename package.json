@@ -41,7 +41,7 @@
     "eslint-plugin-node": "^8.0.0",
     "execa": "^1.0.0",
     "prettier": "^1.15.3",
-    "qunit": "^2.8.0"
+    "qunit": "^2.9.1"
   },
   "engines": {
     "node": "6.* || 8.* || >= 10.*"
