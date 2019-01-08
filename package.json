@@ -24,7 +24,7 @@
     "test": "qunit tests/**/*-test.js"
   },
   "dependencies": {
-    "chalk": "^2.3.0",
+    "chalk": "^2.4.2",
     "co": "^4.6.0",
     "ember-cli-version-checker": "^3.0.0",
     "glob": "^7.1.2",
