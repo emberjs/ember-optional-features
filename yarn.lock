@@ -1374,11 +1374,11 @@ ember-cli-string-utils@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ember-cli-string-utils/-/ember-cli-string-utils-1.1.0.tgz#39b677fc2805f55173735376fcef278eaa4452a1"
 
-ember-cli-version-checker@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-version-checker/-/ember-cli-version-checker-3.1.0.tgz#b18c91f1ed19dfac8b12c42ed40bba9b751f68e2"
+ember-cli-version-checker@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-version-checker/-/ember-cli-version-checker-3.1.1.tgz#30337ff33b892011177166750889cc7d61710acc"
   dependencies:
-    resolve-package-path "^1.0.6"
+    resolve-package-path "^1.0.11"
     semver "^5.6.0"
 
 ember-cli@~3.8.1:
@@ -3943,9 +3943,9 @@ resolve-from@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-1.0.1.tgz#26cbfe935d1aeeeabb29bc3fe5aeb01e93d44226"
 
-resolve-package-path@^1.0.6:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-1.0.7.tgz#8a0be5165a95bb056580129a422ca89bf4dcae02"
+resolve-package-path@^1.0.11:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/resolve-package-path/-/resolve-package-path-1.1.1.tgz#39db6201f7db8800207d8f82cc8005ee30c9200e"
   dependencies:
     path-root "^0.1.1"
     resolve "^1.10.0"
