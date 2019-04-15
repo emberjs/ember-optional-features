@@ -28,7 +28,7 @@
     "co": "^4.6.0",
     "ember-cli-version-checker": "^3.1.3",
     "glob": "^7.1.2",
-    "inquirer": "^6.2.2",
+    "inquirer": "^6.3.1",
     "mkdirp": "^0.5.1",
     "silent-error": "^1.1.1",
     "util.promisify": "^1.0.0"
