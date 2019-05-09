@@ -349,6 +349,106 @@ QUnit.module('commands', hooks => {
       }
     };
 
+    const PODS_AFTER = {
+      pods: {
+        components: {
+          'foo-bar': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- foo-bar -->',
+          },
+          'another': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- another -->',
+          },
+          'also-not-component': {
+            'something.txt': 'This is not a component file.'
+          },
+          'not-template-only': {
+            'component.js': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+          'ts-not-template-only': {
+            'component.ts': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+        },
+        'not-component': {
+          'template.hbs': '<!-- route template -->',
+        },
+      }
+    };
+
+    const MIXED_BEFORE = {
+      components: {
+        'not-template-only-pods': {
+          'component.js': '/* not-template-only-pods */',
+          'template.hbs': '<!-- not-template-only-pods -->',
+        },
+        'template-only-pods': {
+          'template.hbs': '<!-- template-only-pods -->',
+        },
+        'not-template-only.js': '/* not-template-only */',
+      },
+      pods: {
+        components: {
+          'not-template-only-pods-prefix': {
+            'component.js': '/* not-template-only-pods-prefix */',
+            'template.hbs': '<!-- not-template-only-pods-prefix -->',
+          },
+          'template-only-pods-prefix': {
+            'template.hbs': '<!-- template-only-pods-prefix -->',
+          },
+        },
+        'not-component-pods-prefix': {
+          'template.hbs': '<!-- not-component-pods-prefix -->',
+        },
+      },
+      templates: {
+        components: {
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'template-only.hbs': '<!-- template-only -->',
+        },
+        'not-component.hbs': '<!-- not-component -->',
+      },
+    };
+
+    const MIXED_AFTER = {
+      components: {
+        'not-template-only-pods': {
+          'component.js': '/* not-template-only-pods */',
+          'template.hbs': '<!-- not-template-only-pods -->',
+        },
+        'template-only-pods': {
+          'component.js': componentJS,
+          'template.hbs': '<!-- template-only-pods -->',
+        },
+        'not-template-only.js': '/* not-template-only */',
+        'template-only.js': componentJS,
+      },
+      pods: {
+        components: {
+          'not-template-only-pods-prefix': {
+            'component.js': '/* not-template-only-pods-prefix */',
+            'template.hbs': '<!-- not-template-only-pods-prefix -->',
+          },
+          'template-only-pods-prefix': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- template-only-pods-prefix -->',
+          },
+        },
+        'not-component-pods-prefix': {
+          'template.hbs': '<!-- not-component-pods-prefix -->',
+        },
+      },
+      templates: {
+        components: {
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'template-only.hbs': '<!-- template-only -->',
+        },
+        'not-component.hbs': '<!-- not-component -->',
+      },
+    };
+
     QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
       project.write({ app: CLASSIC_BEFORE });
 
@@ -357,12 +457,12 @@ QUnit.module('commands', hooks => {
       assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
     }));
 
-    QUnit.test('it shows a warning when `podModulePrefix` is set', co.wrap(function *(assert) {
+    QUnit.test('it works for pods', co.wrap(function *(assert) {
       project.write({
         app: PODS_BEFORE,
         config: {
           'environment.js': `module.exports = function() {
-            return { 
+            return {
               modulePrefix: 'my-app',
               podModulePrefix: 'my-app/pods',
             };
@@ -370,9 +470,27 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      let result = yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
-      assert.ok(result.stdout.includes('There is an automated refactor script available for this feature, but it does not currently support "pod" apps.'))
+      assert.deepEqual(project.read('app'), PODS_AFTER, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it works for mixed layout apps', co.wrap(function *(assert) {
+      project.write({
+        app: MIXED_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return {
+              modulePrefix: 'my-app',
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
+        }
+      });
+
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.deepEqual(project.read('app'), MIXED_AFTER, 'it should have generated the component JS files');
     }));
 
     QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
@@ -381,6 +499,23 @@ QUnit.module('commands', hooks => {
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
 
       assert.deepEqual(project.read('app'), CLASSIC_BEFORE, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it fails for missing `modulePrefix` when `podModulePrefix` is set', co.wrap(function *(assert) {
+      project.write({
+        app: PODS_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return {
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
+        }
+      });
+
+      let result = yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.ok(result.stdout.includes('`podModulePrefix` could not be processed correctly'));
     }));
   });
 });

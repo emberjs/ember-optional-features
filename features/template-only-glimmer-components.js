@@ -32,33 +32,78 @@ module.exports = {
     }
 
     let root = project.root;
-    let prefix = project.config().podModulePrefix;
-    let isPod = !!prefix;
+    let projectConfig = project.config();
+
+    let { modulePrefix, podModulePrefix } = projectConfig;
+    let podsFolder;
+    if (podModulePrefix) {
+      if (!modulePrefix || !podModulePrefix.startsWith(`${modulePrefix}/`)) {
+        console.log(chalk.yellow(`${chalk.bold('Note:')} There is an automated refactor script available for this feature, but your \`podModulePrefix\` could not be processed correctly.\n`));
+        return;
+      }
+
+      podsFolder = podModulePrefix.slice(modulePrefix.length + 1);
+      if (!podsFolder) {
+        console.log(chalk.yellow(`${chalk.bold('Note:')} There is an automated refactor script available for this feature, but your \`podModulePrefix\` could not be processed correctly.\n`));
+        return;
+      }
+    }
 
     let templates = [];
     let components = [];
 
-    if (isPod) {
-      // TODO
-      console.log(chalk.yellow(`${chalk.bold('Note:')} There is an automated refactor script available for this feature, but it does not currently support "pod" apps. PRs welcome!\n`));
-      return;
-    } else {
-      let templatesRoot = path.join(root, 'app/templates/components');
-      let templateCandidates = yield p(glob)('**/*.hbs', { cwd: templatesRoot });
+    // Handle "Classic" layout
+    let templatesRoot = path.join(root, 'app/templates/components');
+    let templateCandidates = yield p(glob)('**/*.hbs', { cwd: templatesRoot });
 
-      templateCandidates.forEach(template => {
-        let templatePath = path.join('app/templates/components', template);
+    templateCandidates.forEach(template => {
+      let templatePath = path.join('app/templates/components', template);
 
-        let jsPath = path.join('app/components', template.replace(/\.hbs$/, '.js'));
-        if (fs.existsSync(path.join(root, jsPath))) return;
+      let jsPath = path.join('app/components', template.replace(/\.hbs$/, '.js'));
+      if (fs.existsSync(path.join(root, jsPath))) return;
 
-        let tsPath = path.join('app/components', template.replace(/\.hbs$/, '.ts'));
-        if (fs.existsSync(path.join(root, tsPath))) return;
+      let tsPath = path.join('app/components', template.replace(/\.hbs$/, '.ts'));
+      if (fs.existsSync(path.join(root, tsPath))) return;
 
-        templates.push(templatePath);
-        components.push(jsPath); // Always offer to create JS
-      });
-    }
+      templates.push(templatePath);
+      components.push(jsPath); // Always offer to create JS
+    });
+
+    // Handle "Pods" layout without prefix
+
+    let componentsRoot = path.join(root, 'app/components');
+    templateCandidates = yield p(glob)('**/template.hbs', { cwd: componentsRoot });
+
+    templateCandidates.forEach(template => {
+      let templatePath = path.join('app/components', template);
+
+      let jsPath = path.join('app/components', template.replace(/template\.hbs$/, 'component.js'));
+      if (fs.existsSync(path.join(root, jsPath))) return;
+
+      let tsPath = path.join('app/components', template.replace(/template\.hbs$/, 'component.ts'));
+      if (fs.existsSync(path.join(root, tsPath))) return;
+
+      templates.push(templatePath);
+      components.push(jsPath); // Always offer to create JS
+    });
+
+    // Handle "Pods" layout *with* prefix
+
+    componentsRoot = path.join(root, `app/${podsFolder}/components`);
+    templateCandidates = yield p(glob)('**/template.hbs', { cwd: componentsRoot });
+
+    templateCandidates.forEach(template => {
+      let templatePath = path.join(`app/${podsFolder}/components`, template);
+
+      let jsPath = path.join(`app/${podsFolder}/components`, template.replace(/template\.hbs$/, 'component.js'));
+      if (fs.existsSync(path.join(root, jsPath))) return;
+
+      let tsPath = path.join(`app/${podsFolder}/components`, template.replace(/template\.hbs$/, 'component.ts'));
+      if (fs.existsSync(path.join(root, tsPath))) return;
+
+      templates.push(templatePath);
+      components.push(jsPath); // Always offer to create JS
+    });
 
     if (templates.length === 0) {
       return;
