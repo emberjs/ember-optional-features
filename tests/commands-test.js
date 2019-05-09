@@ -279,89 +279,63 @@ QUnit.module('commands', hooks => {
   });
 
   QUnit.module('feature:enable template-only-glimmer-components', () => {
-    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
-      project.write({
-        app: {
-          components: {
-            'not-template-only.js': '/* do not touch */',
-            'ts-not-template-only.ts': '/* do not touch */'
-          },
-          templates: {
-            'not-component.hbs': '<!-- route template -->',
-            components: {
-              'foo-bar.hbs': '<!-- foo-bar -->',
-              'another.hbs': '<!-- another -->',
-              'not-template-only.hbs': '<!-- not-template-only -->',
-              'ts-not-template-only.hbs': '<!-- not-template-only -->',
-              'also-not-component.txt': 'This is not a component file.'
-            }
-          }
-        }
+    const componentJS = strip(`
+      import Component from '@ember/component';
+
+      export default Component.extend({
       });
+    `);
+
+    const CLASSIC_BEFORE = {
+      components: {
+        'not-template-only.js': '/* do not touch */',
+        'ts-not-template-only.ts': '/* do not touch */'
+      },
+      templates: {
+        'not-component.hbs': '<!-- route template -->',
+        components: {
+          'foo-bar.hbs': '<!-- foo-bar -->',
+          'another.hbs': '<!-- another -->',
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'ts-not-template-only.hbs': '<!-- not-template-only -->',
+          'also-not-component.txt': 'This is not a component file.'
+        }
+      }
+    };
+
+    const CLASSIC_AFTER = {
+      components: {
+        'foo-bar.js': componentJS,
+        'another.js': componentJS,
+        'not-template-only.js': '/* do not touch */',
+        'ts-not-template-only.ts': '/* do not touch */'
+      },
+      templates: {
+        'not-component.hbs': '<!-- route template -->',
+        components: {
+          'foo-bar.hbs': '<!-- foo-bar -->',
+          'another.hbs': '<!-- another -->',
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'ts-not-template-only.hbs': '<!-- not-template-only -->',
+          'also-not-component.txt': 'This is not a component file.'
+        }
+      }
+    };
+
+    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
+      project.write({ app: CLASSIC_BEFORE });
 
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
-      let componentJS = strip(`
-        import Component from '@ember/component';
-
-        export default Component.extend({
-        });
-      `);
-
-      assert.deepEqual(project.read('app'), {
-        components: {
-          'foo-bar.js': componentJS,
-          'another.js': componentJS,
-          'not-template-only.js': '/* do not touch */',
-          'ts-not-template-only.ts': '/* do not touch */'
-        },
-        templates: {
-          'not-component.hbs': '<!-- route template -->',
-          components: {
-            'foo-bar.hbs': '<!-- foo-bar -->',
-            'another.hbs': '<!-- another -->',
-            'not-template-only.hbs': '<!-- not-template-only -->',
-            'ts-not-template-only.hbs': '<!-- not-template-only -->',
-            'also-not-component.txt': 'This is not a component file.'
-          }
-        }
-      }, 'it should have generated the component JS files');
+      assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
     }));
 
     QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
-      project.write({
-        app: {
-          components: {
-            'not-template-only.js': '/* do not touch */'
-          },
-          templates: {
-            'not-component.hbs': '<!-- route template -->',
-            components: {
-              'foo-bar.hbs': '<!-- foo-bar -->',
-              'another.hbs': '<!-- another -->',
-              'not-template-only.hbs': '<!-- not-template-only -->',
-              'also-not-component.txt': 'This is not a component file.'
-            }
-          }
-        }
-      });
+      project.write({ app: CLASSIC_BEFORE });
 
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
 
-      assert.deepEqual(project.read('app'), {
-        components: {
-          'not-template-only.js': '/* do not touch */'
-        },
-        templates: {
-          'not-component.hbs': '<!-- route template -->',
-          components: {
-            'foo-bar.hbs': '<!-- foo-bar -->',
-            'another.hbs': '<!-- another -->',
-            'not-template-only.hbs': '<!-- not-template-only -->',
-            'also-not-component.txt': 'This is not a component file.'
-          }
-        }
-      }, 'it should have generated the component JS files');
+      assert.deepEqual(project.read('app'), CLASSIC_BEFORE, 'it should have generated the component JS files');
     }));
   });
 });
