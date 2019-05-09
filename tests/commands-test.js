@@ -322,12 +322,57 @@ QUnit.module('commands', hooks => {
       }
     };
 
+    const PODS_BEFORE = {
+      pods: {
+        components: {
+          'foo-bar': {
+            'template.hbs': '<!-- foo-bar -->',
+          },
+          'another': {
+            'template.hbs': '<!-- another -->',
+          },
+          'also-not-component': {
+            'something.txt': 'This is not a component file.'
+          },
+          'not-template-only': {
+            'component.js': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+          'ts-not-template-only': {
+            'component.ts': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+        },
+        'not-component': {
+          'template.hbs': '<!-- route template -->',
+        },
+      }
+    };
+
     QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
       project.write({ app: CLASSIC_BEFORE });
 
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
       assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it shows a warning when `podModulePrefix` is set', co.wrap(function *(assert) {
+      project.write({
+        app: PODS_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return { 
+              modulePrefix: 'my-app',
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
+        }
+      });
+
+      let result = yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.ok(result.stdout.includes('There is an automated refactor script available for this feature, but it does not currently support "pod" apps.'))
     }));
 
     QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
