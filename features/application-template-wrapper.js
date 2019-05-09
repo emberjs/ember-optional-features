@@ -10,7 +10,7 @@ const path = require('path');
 const strip = require('../utils').strip;
 
 module.exports = {
-  description: 'Wrap the top-level application template (application.hbs) with a \`<div class="ember-view">\` element.',
+  description: 'Wrap the top-level application template (application.hbs) with a `<div class="ember-view">` element.',
   url: 'https://github.com/emberjs/rfcs/pull/280',
   default: true,
   since: '3.1.0',
