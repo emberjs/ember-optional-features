@@ -46,19 +46,17 @@ module.exports = {
       let templatesRoot = path.join(root, 'app/templates/components');
       let templateCandidates = yield p(glob)('**/*.hbs', { cwd: templatesRoot });
 
-      let componentsRoot = path.join(root, 'app/components');
-      let componentCandidates = yield p(glob)('**/*.@(j|t)s', { cwd: componentsRoot });
+      templateCandidates.forEach(template => {
+        let templatePath = path.join('app/templates/components', template);
 
-      templateCandidates.forEach(templatePath => {
-        let jsPath = templatePath.replace(/\.hbs$/, '.js');
-        let tsPath = templatePath.replace(/\.hbs$/, '.ts');
+        let jsPath = path.join('app/components', template.replace(/\.hbs$/, '.js'));
+        if (fs.existsSync(path.join(root, jsPath))) return;
 
-        let foundJs = componentCandidates.indexOf(jsPath) >= 0;
-        let foundTs = componentCandidates.indexOf(tsPath) >= 0;
-        if (!foundJs && !foundTs) {
-          templates.push(path.join('app/templates/components', templatePath));
-          components.push(path.join('app/components', jsPath)); // Always offer to create JS
-        }
+        let tsPath = path.join('app/components', template.replace(/\.hbs$/, '.ts'));
+        if (fs.existsSync(path.join(root, tsPath))) return;
+
+        templates.push(templatePath);
+        components.push(jsPath); // Always offer to create JS
       });
     }
 
