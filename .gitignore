@@ -11,6 +11,7 @@ config/optional-features.json
 /bower_components
 
 # misc
+/.eslintcache
 /.sass-cache
 /connect.lock
 /coverage/*

@@ -29,7 +29,7 @@ const SHARED = {
     return checker.gte(`${feature.since}-beta.1`);
   },
 
-  _ensureConfigFile: co.wrap(function *() {
+  _ensureConfigFile() {
     try {
       return this.project.resolveSync('./config/optional-features.json');
     } catch(err) {
@@ -45,7 +45,7 @@ const SHARED = {
     fs.writeFileSync(configPath, '{}', { encoding: 'UTF-8' });
 
     return configPath;
-  }),
+  },
 
   _setFeature: co.wrap(function *(name, value) {
     let feature = FEATURES[name];
@@ -55,7 +55,7 @@ const SHARED = {
       return LIST_FEATURES.run.apply(this);
     }
 
-    let configPath = yield this._ensureConfigFile();
+    let configPath = this._ensureConfigFile();
     let configJSON = JSON.parse(fs.readFileSync(configPath, { encoding: 'UTF-8' }));
     if (!this._isFeatureAvailable(feature)) {
       console.log(chalk.red(`Error: ${chalk.bold(name)} is only available in Ember ${feature.since} or above.`));
