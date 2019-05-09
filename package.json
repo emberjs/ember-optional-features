@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "ember build",
-    "lint:js": "eslint .",
+    "lint:js": "eslint . --cache",
     "start": "ember serve",
     "test": "qunit tests/**/*-test.js"
   },
