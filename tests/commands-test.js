@@ -279,89 +279,243 @@ QUnit.module('commands', hooks => {
   });
 
   QUnit.module('feature:enable template-only-glimmer-components', () => {
-    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
-      project.write({
-        app: {
-          components: {
-            'not-template-only.js': '/* do not touch */',
-            'ts-not-template-only.ts': '/* do not touch */'
+    const componentJS = strip(`
+      import Component from '@ember/component';
+
+      export default Component.extend({
+      });
+    `);
+
+    const CLASSIC_BEFORE = {
+      components: {
+        'not-template-only.js': '/* do not touch */',
+        'ts-not-template-only.ts': '/* do not touch */'
+      },
+      templates: {
+        'not-component.hbs': '<!-- route template -->',
+        components: {
+          'foo-bar.hbs': '<!-- foo-bar -->',
+          'another.hbs': '<!-- another -->',
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'ts-not-template-only.hbs': '<!-- not-template-only -->',
+          'also-not-component.txt': 'This is not a component file.'
+        }
+      }
+    };
+
+    const CLASSIC_AFTER = {
+      components: {
+        'foo-bar.js': componentJS,
+        'another.js': componentJS,
+        'not-template-only.js': '/* do not touch */',
+        'ts-not-template-only.ts': '/* do not touch */'
+      },
+      templates: {
+        'not-component.hbs': '<!-- route template -->',
+        components: {
+          'foo-bar.hbs': '<!-- foo-bar -->',
+          'another.hbs': '<!-- another -->',
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'ts-not-template-only.hbs': '<!-- not-template-only -->',
+          'also-not-component.txt': 'This is not a component file.'
+        }
+      }
+    };
+
+    const PODS_BEFORE = {
+      pods: {
+        components: {
+          'foo-bar': {
+            'template.hbs': '<!-- foo-bar -->',
           },
-          templates: {
-            'not-component.hbs': '<!-- route template -->',
-            components: {
-              'foo-bar.hbs': '<!-- foo-bar -->',
-              'another.hbs': '<!-- another -->',
-              'not-template-only.hbs': '<!-- not-template-only -->',
-              'ts-not-template-only.hbs': '<!-- not-template-only -->',
-              'also-not-component.txt': 'This is not a component file.'
-            }
-          }
+          'another': {
+            'template.hbs': '<!-- another -->',
+          },
+          'also-not-component': {
+            'something.txt': 'This is not a component file.'
+          },
+          'not-template-only': {
+            'component.js': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+          'ts-not-template-only': {
+            'component.ts': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+        },
+        'not-component': {
+          'template.hbs': '<!-- route template -->',
+        },
+      }
+    };
+
+    const PODS_AFTER = {
+      pods: {
+        components: {
+          'foo-bar': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- foo-bar -->',
+          },
+          'another': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- another -->',
+          },
+          'also-not-component': {
+            'something.txt': 'This is not a component file.'
+          },
+          'not-template-only': {
+            'component.js': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+          'ts-not-template-only': {
+            'component.ts': '/* do not touch */',
+            'template.hbs': '<!-- not-template-only -->',
+          },
+        },
+        'not-component': {
+          'template.hbs': '<!-- route template -->',
+        },
+      }
+    };
+
+    const MIXED_BEFORE = {
+      components: {
+        'not-template-only-pods': {
+          'component.js': '/* not-template-only-pods */',
+          'template.hbs': '<!-- not-template-only-pods -->',
+        },
+        'template-only-pods': {
+          'template.hbs': '<!-- template-only-pods -->',
+        },
+        'not-template-only.js': '/* not-template-only */',
+      },
+      pods: {
+        components: {
+          'not-template-only-pods-prefix': {
+            'component.js': '/* not-template-only-pods-prefix */',
+            'template.hbs': '<!-- not-template-only-pods-prefix -->',
+          },
+          'template-only-pods-prefix': {
+            'template.hbs': '<!-- template-only-pods-prefix -->',
+          },
+        },
+        'not-component-pods-prefix': {
+          'template.hbs': '<!-- not-component-pods-prefix -->',
+        },
+      },
+      templates: {
+        components: {
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'template-only.hbs': '<!-- template-only -->',
+        },
+        'not-component.hbs': '<!-- not-component -->',
+      },
+    };
+
+    const MIXED_AFTER = {
+      components: {
+        'not-template-only-pods': {
+          'component.js': '/* not-template-only-pods */',
+          'template.hbs': '<!-- not-template-only-pods -->',
+        },
+        'template-only-pods': {
+          'component.js': componentJS,
+          'template.hbs': '<!-- template-only-pods -->',
+        },
+        'not-template-only.js': '/* not-template-only */',
+        'template-only.js': componentJS,
+      },
+      pods: {
+        components: {
+          'not-template-only-pods-prefix': {
+            'component.js': '/* not-template-only-pods-prefix */',
+            'template.hbs': '<!-- not-template-only-pods-prefix -->',
+          },
+          'template-only-pods-prefix': {
+            'component.js': componentJS,
+            'template.hbs': '<!-- template-only-pods-prefix -->',
+          },
+        },
+        'not-component-pods-prefix': {
+          'template.hbs': '<!-- not-component-pods-prefix -->',
+        },
+      },
+      templates: {
+        components: {
+          'not-template-only.hbs': '<!-- not-template-only -->',
+          'template-only.hbs': '<!-- template-only -->',
+        },
+        'not-component.hbs': '<!-- not-component -->',
+      },
+    };
+
+    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
+      project.write({ app: CLASSIC_BEFORE });
+
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it works for pods', co.wrap(function *(assert) {
+      project.write({
+        app: PODS_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return {
+              modulePrefix: 'my-app',
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
         }
       });
 
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
-      let componentJS = strip(`
-        import Component from '@ember/component';
-
-        export default Component.extend({
-        });
-      `);
-
-      assert.deepEqual(project.read('app'), {
-        components: {
-          'foo-bar.js': componentJS,
-          'another.js': componentJS,
-          'not-template-only.js': '/* do not touch */',
-          'ts-not-template-only.ts': '/* do not touch */'
-        },
-        templates: {
-          'not-component.hbs': '<!-- route template -->',
-          components: {
-            'foo-bar.hbs': '<!-- foo-bar -->',
-            'another.hbs': '<!-- another -->',
-            'not-template-only.hbs': '<!-- not-template-only -->',
-            'ts-not-template-only.hbs': '<!-- not-template-only -->',
-            'also-not-component.txt': 'This is not a component file.'
-          }
-        }
-      }, 'it should have generated the component JS files');
+      assert.deepEqual(project.read('app'), PODS_AFTER, 'it should have generated the component JS files');
     }));
 
-    QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
+    QUnit.test('it works for mixed layout apps', co.wrap(function *(assert) {
       project.write({
-        app: {
-          components: {
-            'not-template-only.js': '/* do not touch */'
-          },
-          templates: {
-            'not-component.hbs': '<!-- route template -->',
-            components: {
-              'foo-bar.hbs': '<!-- foo-bar -->',
-              'another.hbs': '<!-- another -->',
-              'not-template-only.hbs': '<!-- not-template-only -->',
-              'also-not-component.txt': 'This is not a component file.'
-            }
-          }
+        app: MIXED_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return {
+              modulePrefix: 'my-app',
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
         }
       });
 
+      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.deepEqual(project.read('app'), MIXED_AFTER, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
+      project.write({ app: CLASSIC_BEFORE });
+
       yield run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
 
-      assert.deepEqual(project.read('app'), {
-        components: {
-          'not-template-only.js': '/* do not touch */'
-        },
-        templates: {
-          'not-component.hbs': '<!-- route template -->',
-          components: {
-            'foo-bar.hbs': '<!-- foo-bar -->',
-            'another.hbs': '<!-- another -->',
-            'not-template-only.hbs': '<!-- not-template-only -->',
-            'also-not-component.txt': 'This is not a component file.'
-          }
+      assert.deepEqual(project.read('app'), CLASSIC_BEFORE, 'it should have generated the component JS files');
+    }));
+
+    QUnit.test('it fails for missing `modulePrefix` when `podModulePrefix` is set', co.wrap(function *(assert) {
+      project.write({
+        app: PODS_BEFORE,
+        config: {
+          'environment.js': `module.exports = function() {
+            return {
+              podModulePrefix: 'my-app/pods',
+            };
+          };`
         }
-      }, 'it should have generated the component JS files');
+      });
+
+      let result = yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.ok(result.stdout.includes('`podModulePrefix` could not be processed correctly'));
     }));
   });
 });
