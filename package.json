@@ -39,7 +39,7 @@
     "ember-cli-dependency-checker": "^3.2.0",
     "eslint": "^6.0.1",
     "eslint-plugin-node": "^8.0.0",
-    "execa": "^2.0.1",
+    "execa": "^2.0.2",
     "prettier": "^1.18.2",
     "qunit": "^2.9.2"
   },
