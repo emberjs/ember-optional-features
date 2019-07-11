@@ -2411,9 +2411,9 @@ inline-source-map-comment@^1.0.5:
     sum-up "^1.0.1"
     xtend "^4.0.0"
 
-inquirer@^6, inquirer@^6.2.2, inquirer@^6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-6.4.1.tgz#7bd9e5ab0567cd23b41b0180b68e0cfa82fc3c0b"
+inquirer@^6, inquirer@^6.2.2, inquirer@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-6.5.0.tgz#2303317efc9a4ea7ec2e2df6f86569b734accf42"
   dependencies:
     ansi-escapes "^3.2.0"
     chalk "^2.4.2"
@@ -2421,7 +2421,7 @@ inquirer@^6, inquirer@^6.2.2, inquirer@^6.4.1:
     cli-width "^2.0.0"
     external-editor "^3.0.3"
     figures "^2.0.0"
-    lodash "^4.17.11"
+    lodash "^4.17.12"
     mute-stream "0.0.7"
     run-async "^2.2.0"
     rxjs "^6.4.0"
@@ -3092,7 +3092,7 @@ lodash.values@~2.3.0:
   dependencies:
     lodash.keys "~2.3.0"
 
-lodash@^4.17.10, lodash@^4.17.11:
+lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12:
   version "4.17.14"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.14.tgz#9ce487ae66c96254fe20b599f21b6816028078ba"
 
