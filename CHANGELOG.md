@@ -1,3 +1,12 @@
+## v1.1.0 (2019-10-23)
+
+#### :rocket: Enhancement
+* [#148](https://github.com/emberjs/ember-optional-features/pull/148) [FEATURE] Adds isFeatureExplicitlySet API ([@pzuraq](https://github.com/pzuraq))
+
+#### Committers: 2
+- Chris Garrett ([@pzuraq](https://github.com/pzuraq))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v1.0.0 (2019-09-21)
 
 #### :boom: Breaking Change
