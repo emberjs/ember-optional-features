@@ -127,6 +127,15 @@ QUnit.module('@ember/optional-features', hooks => {
     assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), false, 'Expecting default value');
   });
 
+  QUnit.test('it can query the features with `isFeatureExplicitlySet`', assert => {
+    let addon = buildAddon({
+      'application-template-wrapper': false
+    });
+
+    assert.strictEqual(addon.isFeatureExplicitlySet('application-template-wrapper'), true, 'Expecting value to exist');
+    assert.strictEqual(addon.isFeatureExplicitlySet('template-only-glimmer-components'), false, 'Expecting to not exist');
+  });
+
   QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
     process.env.EMBER_OPTIONAL_FEATURES = `{ "application-template-wrapper": false }`;
 

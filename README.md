@@ -47,6 +47,8 @@ included() {
 }
 ```
 
+It also exposes a method called `isFeatureExplicitlySet`, which can be used to check whether or not the user has explictly set the value of the option instead of using the default.
+
 ### At run-time (from an app or addon)
 
 WIP -- there does not yet exist a public API for accessing the state of optional features at runtime. [This](https://github.com/pzuraq/ember-compatibility-helpers/issues/27) issue is tracking it.
