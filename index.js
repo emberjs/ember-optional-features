@@ -62,6 +62,10 @@ module.exports = {
     return  value !== undefined ? value : FEATURES[name].default;
   },
 
+  isFeatureExplicitlySet(name) {
+    return this._features[name] !== undefined;
+  },
+
   config() {
     let EmberENV = {};
     let features = this._features;
