@@ -30,15 +30,15 @@ const SHARED = {
   },
 
   _ensureConfigFile() {
+    let configPath = getConfigPath(this.project);
+
     try {
-      return this.project.resolveSync('./config/optional-features.json');
+      return this.project.resolveSync(configPath);
     } catch(err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
     }
-
-    let configPath = getConfigPath(this.project);
 
     mkdirp.sync(path.join(this.project.root, path.dirname(configPath)));
 
