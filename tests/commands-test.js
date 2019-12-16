@@ -199,6 +199,45 @@ QUnit.module('commands', hooks => {
           `
         }, 'it should have rewritten the config file with the appropiate flags');
       }));
+
+      QUnit.test('it rewrites the config file with a custom config path', co.wrap(function *(assert) {
+        project.write({
+          'package.json': strip`
+            {
+              "name": "dummy",
+              "description": "",
+              "version": "0.0.0",
+              "devDependencies": {
+                "@ember/optional-features": "*",
+                "ember-cli": "*",
+                "ember-source": "*"
+              },
+              "ember-addon": {
+                "configPath": "foo/bar"
+              }
+            }
+          `
+        });
+
+        project.write({
+          'optional-features.json': strip(`
+            {
+              "template-only-glimmer-components": true
+            }
+          `)
+        }, 'foo/bar');
+
+        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+
+        assert.deepEqual(project.read('foo/bar'), {
+          'optional-features.json': strip`
+            {
+              "application-template-wrapper": ${testCase.expected},
+              "template-only-glimmer-components": true
+            }
+          `
+        }, 'it should have rewritten the config file with the appropiate flags');
+      }));
     });
   });
 
