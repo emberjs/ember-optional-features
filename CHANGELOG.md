@@ -1,3 +1,12 @@
+## v1.2.0 (2019-12-16)
+
+#### :bug: Bug Fix
+* [#159](https://github.com/emberjs/ember-optional-features/pull/159) Fix command ignoring existing config in an addon ([@simonihmig](https://github.com/simonihmig))
+
+#### Committers: 2
+- Simon Ihmig ([@simonihmig](https://github.com/simonihmig))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
 ## v1.1.0 (2019-10-23)
 
 #### :rocket: Enhancement
