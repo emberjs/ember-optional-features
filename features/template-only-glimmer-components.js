@@ -2,7 +2,6 @@
 'use strict';
 
 const chalk = require('chalk');
-const co = require('co');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const glob = require('glob');
@@ -26,7 +25,7 @@ module.exports = {
   url: 'https://github.com/emberjs/rfcs/pull/278',
   default: false,
   since: '3.1.0',
-  callback: co.wrap(function *(project, value) {
+  callback: async function (project, value) {
     if (value !== true) {
       return;
     }
@@ -54,7 +53,7 @@ module.exports = {
 
     // Handle "Classic" layout
     let templatesRoot = path.join(root, 'app/templates/components');
-    let templateCandidates = yield p(glob)('**/*.hbs', { cwd: templatesRoot });
+    let templateCandidates = await p(glob)('**/*.hbs', { cwd: templatesRoot });
 
     templateCandidates.forEach(template => {
       let templatePath = path.join('app/templates/components', template);
@@ -72,7 +71,7 @@ module.exports = {
     // Handle "Pods" layout without prefix
 
     let componentsRoot = path.join(root, 'app/components');
-    templateCandidates = yield p(glob)('**/template.hbs', { cwd: componentsRoot });
+    templateCandidates = await p(glob)('**/template.hbs', { cwd: componentsRoot });
 
     templateCandidates.forEach(template => {
       let templatePath = path.join('app/components', template);
@@ -90,7 +89,7 @@ module.exports = {
     // Handle "Pods" layout *with* prefix
 
     componentsRoot = path.join(root, `app/${podsFolder}/components`);
-    templateCandidates = yield p(glob)('**/template.hbs', { cwd: componentsRoot });
+    templateCandidates = await p(glob)('**/template.hbs', { cwd: componentsRoot });
 
     templateCandidates.forEach(template => {
       let templatePath = path.join(`app/${podsFolder}/components`, template);
@@ -138,7 +137,7 @@ module.exports = {
       `);
     }
 
-    let response = yield inquirer.prompt({
+    let response = await inquirer.prompt({
       type: 'confirm',
       name: 'shouldGenerate',
       message: 'Would you like me to generate these component files for you?',
@@ -152,11 +151,11 @@ module.exports = {
         let componentPath = components[i];
         console.log(`  ${chalk.green('create')} ${componentPath}`);
         let absolutePath = path.join(project.root, componentPath);
-        yield p(mkdirp)(path.dirname(absolutePath));
-        yield p(fs.writeFile)(absolutePath, ComponentFile, { encoding: 'UTF-8' });
+        await p(mkdirp)(path.dirname(absolutePath));
+        await p(fs.writeFile)(absolutePath, ComponentFile, { encoding: 'UTF-8' });
       }
 
       console.log();
     }
-  })
+  }
 };

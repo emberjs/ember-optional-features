@@ -2,7 +2,6 @@
 'use strict';
 
 const chalk = require('chalk');
-const co = require('co');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const p = require('util.promisify');
@@ -14,7 +13,7 @@ module.exports = {
   url: 'https://github.com/emberjs/rfcs/pull/280',
   default: true,
   since: '3.1.0',
-  callback: co.wrap(function *(project, value) {
+  callback: async function (project, value) {
     if (value !== false) {
       return;
     }
@@ -36,7 +35,7 @@ module.exports = {
     let absolutePath = path.join(root, templatePath);
 
     try {
-      originalContent = yield p(fs.readFile)(absolutePath, { encoding: 'UTF-8' });
+      originalContent = await p(fs.readFile)(absolutePath, { encoding: 'UTF-8' });
     } catch(err) {
       if (err.code === 'ENOENT') {
         return;
@@ -63,7 +62,7 @@ module.exports = {
       To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
     `);
 
-    let response = yield inquirer.prompt({
+    let response = await inquirer.prompt({
       type: 'confirm',
       name: 'shouldRewrite',
       message: 'Would you like me to do that for you?',
@@ -102,9 +101,9 @@ module.exports = {
 
       console.log(`  ${chalk.yellow('overwrite')} ${templatePath}`);
 
-      yield p(fs.writeFile)(templatePath, content.join('\n'), { encoding: 'UTF-8' });
+      await p(fs.writeFile)(templatePath, content.join('\n'), { encoding: 'UTF-8' });
 
       console.log();
     }
-  })
+  }
 };

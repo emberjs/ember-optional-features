@@ -4,7 +4,6 @@
 const VersionChecker = require('ember-cli-version-checker');
 
 const chalk = require('chalk');
-const co = require('co');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
@@ -47,7 +46,7 @@ const SHARED = {
     return configPath;
   },
 
-  _setFeature: co.wrap(function *(name, value) {
+  _setFeature: async function (name, value) {
     let feature = FEATURES[name];
 
     if (feature === undefined) {
@@ -63,7 +62,7 @@ const SHARED = {
     }
 
     if (typeof feature.callback === 'function') {
-      yield feature.callback(this.project, value);
+      await feature.callback(this.project, value);
     }
 
     let config = {};
@@ -81,7 +80,7 @@ const SHARED = {
     let state = value ? 'Enabled' : 'Disabled';
 
     console.log(chalk.green(`${state} ${chalk.bold(name)}. Be sure to commit ${chalk.underline('config/optional-features.json')} to source control!`));
-  })
+  }
 };
 
 const USAGE = Object.assign({

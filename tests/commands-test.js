@@ -3,7 +3,6 @@
 const CWD = process.cwd();
 
 const fs = require('fs');
-const co = require('co');
 const createTempDir = require('broccoli-test-helper').createTempDir;
 const execa = require('execa');
 const mkdirp = require('mkdirp');
@@ -26,8 +25,8 @@ function run(/*command, ...args, options */) {
 QUnit.module('commands', hooks => {
   let project;
 
-  hooks.beforeEach(co.wrap(function *() {
-    project = yield createTempDir();
+  hooks.beforeEach(async function () {
+    project = await createTempDir();
 
     project.write({
       'package.json': strip`
@@ -58,21 +57,21 @@ QUnit.module('commands', hooks => {
         "version": "9.9.9"
       }
     `, { encoding: 'UTF-8' });
-  }));
+  });
 
-  hooks.afterEach(co.wrap(function *() {
+  hooks.afterEach(async function () {
     process.chdir(CWD);
-    yield project.dispose();
+    await project.dispose();
     fs.unlinkSync(p(CWD, 'node_modules', '@ember', 'optional-features'));
     fs.unlinkSync(p(CWD, 'node_modules', 'ember-source', 'package.json'));
-  }));
+  });
 
   function USAGE(command) {
-    QUnit.test(`it prints the USAGE message`, co.wrap(function *(assert) {
-      let result = yield run(command);
+    QUnit.test(`it prints the USAGE message`, async function (assert) {
+      let result = await run(command);
 
       assert.ok(result.stdout.indexOf('Usage:') >= 0, 'it should print the USAGE message');
-    }));
+    });
   }
 
   QUnit.module('feature', () => {
@@ -82,8 +81,8 @@ QUnit.module('commands', hooks => {
   QUnit.module('feature:list', () => {
     USAGE('feature:list');
 
-    QUnit.test(`it lists all the available features`, co.wrap(function *(assert) {
-      let result = yield run('feature:list');
+    QUnit.test(`it lists all the available features`, async function (assert) {
+      let result = await run('feature:list');
 
       assert.ok(result.stdout.indexOf('Available features:') >= 0, 'it list the available features');
 
@@ -94,7 +93,7 @@ QUnit.module('commands', hooks => {
         assert.ok(result.stdout.indexOf(feature.description) >= 0, `it should include the description for ${key}`);
         assert.ok(result.stdout.indexOf(feature.url) >= 0, `it should include the URL for ${key}`);
       });
-    }));
+    });
   });
 
   [
@@ -107,7 +106,7 @@ QUnit.module('commands', hooks => {
     }
   ].forEach(testCase => {
     QUnit.module(testCase.command, () => {
-      QUnit.test('it honors customized config path', co.wrap(function *(assert) {
+      QUnit.test('it honors customized config path', async function (assert) {
         project.write({
           'package.json': strip`
             {
@@ -126,7 +125,7 @@ QUnit.module('commands', hooks => {
           `
         });
 
-        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+        await run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('foo/bar'), {
           'optional-features.json': strip`
@@ -135,10 +134,10 @@ QUnit.module('commands', hooks => {
             }
           `
         }, 'it should have created the config file with the appropiate flags');
-      }));
+      });
 
-      QUnit.test('it creates the config file if one does not already exists', co.wrap(function *(assert) {
-        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+      QUnit.test('it creates the config file if one does not already exists', async function (assert) {
+        await run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('config'), {
           'optional-features.json': strip`
@@ -147,16 +146,16 @@ QUnit.module('commands', hooks => {
             }
           `
         }, 'it should have created the config file with the appropiate flags');
-      }));
+      });
 
-      QUnit.test('it errors on invalid features', co.wrap(function *(assert) {
-        let result = yield run(testCase.command, 'foo-bar');
+      QUnit.test('it errors on invalid features', async function (assert) {
+        let result = await run(testCase.command, 'foo-bar');
 
         assert.ok(result.stdout.indexOf('Error:') >= 0, 'it should print an error');
         assert.ok(result.stdout.indexOf('foo-bar is not a valid feature') >= 0, 'it should print an error');
-      }));
+      });
 
-      QUnit.test('it errors on invalid ember version', co.wrap(function *(assert) {
+      QUnit.test('it errors on invalid ember version', async function (assert) {
         project.write({
           'node_modules': {
             'ember-source': {
@@ -171,13 +170,13 @@ QUnit.module('commands', hooks => {
           }
         });
 
-        let result = yield run(testCase.command, 'application-template-wrapper');
+        let result = await run(testCase.command, 'application-template-wrapper');
 
         assert.ok(result.stdout.indexOf('Error:') >= 0, 'it should print an error');
         assert.ok(result.stdout.indexOf('application-template-wrapper is only available in Ember 3.1.0 or above') >= 0, 'it should print an error');
-      }));
+      });
 
-      QUnit.test('it rewrites the config file if one already exists', co.wrap(function *(assert) {
+      QUnit.test('it rewrites the config file if one already exists', async function (assert) {
         project.write({
           config: {
             'optional-features.json': strip(`
@@ -188,7 +187,7 @@ QUnit.module('commands', hooks => {
           }
         });
 
-        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+        await run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('config'), {
           'optional-features.json': strip`
@@ -198,9 +197,9 @@ QUnit.module('commands', hooks => {
             }
           `
         }, 'it should have rewritten the config file with the appropiate flags');
-      }));
+      });
 
-      QUnit.test('it rewrites the config file with a custom config path', co.wrap(function *(assert) {
+      QUnit.test('it rewrites the config file with a custom config path', async function (assert) {
         project.write({
           'package.json': strip`
             {
@@ -227,7 +226,7 @@ QUnit.module('commands', hooks => {
           `)
         }, 'foo/bar');
 
-        yield run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
+        await run(testCase.command, 'application-template-wrapper', { input: 'no\n' });
 
         assert.deepEqual(project.read('foo/bar'), {
           'optional-features.json': strip`
@@ -237,12 +236,12 @@ QUnit.module('commands', hooks => {
             }
           `
         }, 'it should have rewritten the config file with the appropiate flags');
-      }));
+      });
     });
   });
 
   QUnit.module('feature:disable application-template-wrapper', () => {
-    QUnit.test('it rewrites application.hbs when asked to', co.wrap(function *(assert) {
+    QUnit.test('it rewrites application.hbs when asked to', async function (assert) {
       project.write({
         app: {
           templates: {
@@ -261,7 +260,7 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      yield run('feature:disable', 'application-template-wrapper', { input: 'yes\n' });
+      await run('feature:disable', 'application-template-wrapper', { input: 'yes\n' });
 
       assert.deepEqual(project.read('app/templates'), {
         'application.hbs': strip`
@@ -278,9 +277,9 @@ QUnit.module('commands', hooks => {
           </div>
         `
       }, 'it should have rewritten the template with the wrapper');
-    }));
+    });
 
-    QUnit.test('it does not rewrite application.hbs when asked not to', co.wrap(function *(assert) {
+    QUnit.test('it does not rewrite application.hbs when asked not to', async function (assert) {
       project.write({
         app: {
           templates: {
@@ -299,7 +298,7 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      yield run('feature:disable', 'application-template-wrapper', { input: 'no\n' });
+      await run('feature:disable', 'application-template-wrapper', { input: 'no\n' });
 
       assert.deepEqual(project.read('app/templates'), {
         'application.hbs': strip`
@@ -314,7 +313,7 @@ QUnit.module('commands', hooks => {
           <!-- wow -->
         `
       }, 'it should not have rewritten the template');
-    }));
+    });
   });
 
   QUnit.module('feature:enable template-only-glimmer-components', () => {
@@ -488,15 +487,15 @@ QUnit.module('commands', hooks => {
       },
     };
 
-    QUnit.test('it generates component files when asked to', co.wrap(function *(assert) {
+    QUnit.test('it generates component files when asked to', async function (assert) {
       project.write({ app: CLASSIC_BEFORE });
 
-      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+      await run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
       assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
-    }));
+    });
 
-    QUnit.test('it works for pods', co.wrap(function *(assert) {
+    QUnit.test('it works for pods', async function (assert) {
       project.write({
         app: PODS_BEFORE,
         config: {
@@ -509,12 +508,12 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+      await run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
       assert.deepEqual(project.read('app'), PODS_AFTER, 'it should have generated the component JS files');
-    }));
+    });
 
-    QUnit.test('it works for mixed layout apps', co.wrap(function *(assert) {
+    QUnit.test('it works for mixed layout apps', async function (assert) {
       project.write({
         app: MIXED_BEFORE,
         config: {
@@ -527,20 +526,20 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+      await run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
       assert.deepEqual(project.read('app'), MIXED_AFTER, 'it should have generated the component JS files');
-    }));
+    });
 
-    QUnit.test('it does not generates component files when asked not to', co.wrap(function *(assert) {
+    QUnit.test('it does not generates component files when asked not to', async function (assert) {
       project.write({ app: CLASSIC_BEFORE });
 
-      yield run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
+      await run('feature:enable', 'template-only-glimmer-components', { input: 'no\n' });
 
       assert.deepEqual(project.read('app'), CLASSIC_BEFORE, 'it should have generated the component JS files');
-    }));
+    });
 
-    QUnit.test('it fails for missing `modulePrefix` when `podModulePrefix` is set', co.wrap(function *(assert) {
+    QUnit.test('it fails for missing `modulePrefix` when `podModulePrefix` is set', async function (assert) {
       project.write({
         app: PODS_BEFORE,
         config: {
@@ -552,9 +551,9 @@ QUnit.module('commands', hooks => {
         }
       });
 
-      let result = yield run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+      let result = await run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
 
       assert.ok(result.stdout.includes('`podModulePrefix` could not be processed correctly'));
-    }));
+    });
   });
 });
