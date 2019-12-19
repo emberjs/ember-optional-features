@@ -1,3 +1,14 @@
+## v1.3.0 (2019-12-19)
+
+#### :rocket: Enhancement
+* [#162](https://github.com/emberjs/ember-optional-features/pull/162) Add `--run-codemod` command line option. ([@rwjblue](https://github.com/rwjblue))
+
+#### :house: Internal
+* [#161](https://github.com/emberjs/ember-optional-features/pull/161) Remove co.wrap usage in favor of using async/await directly. ([@rwjblue](https://github.com/rwjblue))
+
+#### Committers: 1
+- Robert Jackson ([@rwjblue](https://github.com/rwjblue))
+
 ## v1.2.0 (2019-12-16)
 
 #### :bug: Bug Fix
