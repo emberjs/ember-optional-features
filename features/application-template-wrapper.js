@@ -13,7 +13,7 @@ module.exports = {
   url: 'https://github.com/emberjs/rfcs/pull/280',
   default: true,
   since: '3.1.0',
-  callback: async function (project, value) {
+  callback: async function (project, value, shouldRunCodemod) {
     if (value !== false) {
       return;
     }
@@ -44,34 +44,38 @@ module.exports = {
       }
     }
 
-    console.log(strip`
-      Disabling ${chalk.bold('application-template-wrapper')}...
+    if (shouldRunCodemod === undefined) {
+      console.log(strip`
+        Disabling ${chalk.bold('application-template-wrapper')}...
 
-      This will remove the \`<div class="ember-view">\` wrapper for the top-level application template (\`${templatePath}\`).
+        This will remove the \`<div class="ember-view">\` wrapper for the top-level application template (\`${templatePath}\`).
 
-      While this may be a desirable change, it might break your styling in subtle ways:
+        While this may be a desirable change, it might break your styling in subtle ways:
 
-        - Perhaps you were targeting the \`.ember-view\` class in your CSS.
+          - Perhaps you were targeting the \`.ember-view\` class in your CSS.
 
-        - Perhaps you were targeting the \`<div>\` element in your CSS (e.g. \`body > div > .some-child\`).
+          - Perhaps you were targeting the \`<div>\` element in your CSS (e.g. \`body > div > .some-child\`).
 
-        - Depending on your choice of \`rootElement\`, your app might not be wrapped inside a block-level element anymore.
+          - Depending on your choice of \`rootElement\`, your app might not be wrapped inside a block-level element anymore.
 
-      For more information, see ${chalk.underline('https://github.com/emberjs/rfcs/pull/280')}.
+        For more information, see ${chalk.underline('https://github.com/emberjs/rfcs/pull/280')}.
 
-      To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
-    `);
+        To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
+      `);
 
-    let response = await inquirer.prompt({
-      type: 'confirm',
-      name: 'shouldRewrite',
-      message: 'Would you like me to do that for you?',
-      default: false
-    });
+      let response = await inquirer.prompt({
+        type: 'confirm',
+        name: 'shouldRewrite',
+        message: 'Would you like me to do that for you?',
+        default: false
+      });
 
-    console.log();
+      console.log();
 
-    if (response.shouldRewrite) {
+      shouldRunCodemod = response.shouldRewrite;
+    }
+
+    if (shouldRunCodemod) {
       let lines = originalContent.split('\n');
       let hasFinalNewLine;
 

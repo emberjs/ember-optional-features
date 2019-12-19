@@ -11,8 +11,7 @@ const strip = require('../utils').strip;
 
 const FEATURES = require('../features');
 
-function run(/*command, ...args, options */) {
-  let args = [].slice.call(arguments);
+function run(...args) {
   let options = {};
 
   if (typeof args[args.length - 1] === 'object') {
@@ -241,6 +240,44 @@ QUnit.module('commands', hooks => {
   });
 
   QUnit.module('feature:disable application-template-wrapper', () => {
+    QUnit.test('it rewrites application.hbs without prompt when asked to', async function (assert) {
+      project.write({
+        app: {
+          templates: {
+            'application.hbs': strip`
+              <ul>
+                <li>One</li>
+                <li>Two</li>
+                <li>Three</li>
+              </ul>
+
+              {{outlet}}
+
+              <!-- wow -->
+            `
+          }
+        }
+      });
+
+      await run('feature:disable', 'application-template-wrapper', '--run-codemod');
+
+      assert.deepEqual(project.read('app/templates'), {
+        'application.hbs': strip`
+          <div class="ember-view">
+            <ul>
+              <li>One</li>
+              <li>Two</li>
+              <li>Three</li>
+            </ul>
+
+            {{outlet}}
+
+            <!-- wow -->
+          </div>
+        `
+      }, 'it should have rewritten the template with the wrapper');
+    });
+
     QUnit.test('it rewrites application.hbs when asked to', async function (assert) {
       project.write({
         app: {
@@ -491,6 +528,14 @@ QUnit.module('commands', hooks => {
       project.write({ app: CLASSIC_BEFORE });
 
       await run('feature:enable', 'template-only-glimmer-components', { input: 'yes\n' });
+
+      assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
+    });
+
+    QUnit.test('it generates component files without prompt when asked to', async function (assert) {
+      project.write({ app: CLASSIC_BEFORE });
+
+      await run('feature:enable', 'template-only-glimmer-components', '--run-codemod');
 
       assert.deepEqual(project.read('app'), CLASSIC_AFTER, 'it should have generated the component JS files');
     });

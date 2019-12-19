@@ -46,7 +46,7 @@ const SHARED = {
     return configPath;
   },
 
-  _setFeature: async function (name, value) {
+  _setFeature: async function (name, value, shouldRunCodemod) {
     let feature = FEATURES[name];
 
     if (feature === undefined) {
@@ -62,7 +62,7 @@ const SHARED = {
     }
 
     if (typeof feature.callback === 'function') {
-      await feature.callback(this.project, value);
+      await feature.callback(this.project, value, shouldRunCodemod);
     }
 
     let config = {};
@@ -134,11 +134,20 @@ const ENABLE_FEATURE = Object.assign({
   name: 'feature:enable',
   description: 'Enable feature.',
   works: 'insideProject',
+  availableOptions: [
+    {
+      name: 'run-codemod',
+      type: Boolean,
+      description: 'run any associated codemods without prompting'
+      // intentionally not setting a default, when the value is undefined the
+      // command will prompt the user
+    },
+  ],
   anonymousOptions: [
     '<feature-name>'
   ],
-  run(_, args) {
-    return this._setFeature(args[0], true);
+  run(commandOptions, args) {
+    return this._setFeature(args[0], true, commandOptions.runCodemod);
   }
 }, SHARED);
 
@@ -146,11 +155,20 @@ const DISABLE_FEATURE = Object.assign({
   name: 'feature:disable',
   description: 'Disable feature.',
   works: 'insideProject',
+  availableOptions: [
+    {
+      name: 'run-codemod',
+      type: Boolean,
+      description: 'run any associated codemods without prompting'
+      // intentionally not setting a default, when the value is undefined the
+      // command will prompt the user
+    },
+  ],
   anonymousOptions: [
     '<feature-name>'
   ],
-  run(_, args) {
-    return this._setFeature(args[0], false);
+  run(commandOptions, args) {
+    return this._setFeature(args[0], false, commandOptions.runCodemod);
   }
 }, SHARED);
 
