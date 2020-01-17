@@ -30,7 +30,7 @@
     "inquirer": "^7.0.3",
     "mkdirp": "^0.5.1",
     "silent-error": "^1.1.1",
-    "util.promisify": "^1.0.0"
+    "util.promisify": "^1.0.1"
   },
   "devDependencies": {
     "broccoli-test-helper": "^2.0.0",
