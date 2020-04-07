@@ -39,7 +39,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-node": "^11.0.0",
     "execa": "^3.4.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.4",
     "qunit": "^2.9.3",
     "release-it": "^12.4.3",
     "release-it-lerna-changelog": "^1.0.3"
