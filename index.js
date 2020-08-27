@@ -24,7 +24,7 @@ module.exports = {
 
     try {
       Object.assign(features, this.project.require(configPath));
-    } catch(err) {
+    } catch (err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }
@@ -40,15 +40,21 @@ module.exports = {
   _validateFeatures(features) {
     let validated = {};
     let keys = Object.keys(features);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (FEATURES[key] === undefined) {
-        throw new SilentError(`Unknown feature "${key}" found in config/optional-features.json`);
+        throw new SilentError(
+          `Unknown feature "${key}" found in config/optional-features.json`
+        );
       } else if (features[key] !== null && typeof features[key] !== 'boolean') {
-        throw new SilentError(`Unsupported value "${String(features[key])}" for "${key}" found in config/optional-features.json`);
+        throw new SilentError(
+          `Unsupported value "${String(
+            features[key]
+          )}" for "${key}" found in config/optional-features.json`
+        );
       }
     });
 
-    Object.keys(FEATURES).forEach(key => {
+    Object.keys(FEATURES).forEach((key) => {
       if (typeof features[key] === 'boolean') {
         validated[key] = features[key];
       }
@@ -59,7 +65,7 @@ module.exports = {
 
   isFeatureEnabled(name) {
     let value = this._features[name];
-    return  value !== undefined ? value : FEATURES[name].default;
+    return value !== undefined ? value : FEATURES[name].default;
   },
 
   isFeatureExplicitlySet(name) {
@@ -70,16 +76,15 @@ module.exports = {
     let EmberENV = {};
     let features = this._features;
 
-    Object.keys(FEATURES).forEach(key => {
+    Object.keys(FEATURES).forEach((key) => {
       let value = features[key];
 
       if (value !== undefined) {
         let KEY = `_${key.toUpperCase().replace(/-/g, '_')}`;
         EmberENV[KEY] = value;
       }
-
     });
 
     return { EmberENV };
-  }
+  },
 };
