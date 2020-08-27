@@ -1,3 +1,24 @@
+## v2.0.0 (2020-08-27)
+
+#### :boom: Breaking Change
+* [#238](https://github.com/emberjs/ember-optional-features/pull/238) Drop Node 8 support. ([@rwjblue](https://github.com/rwjblue))
+
+#### :rocket: Enhancement
+* [#242](https://github.com/emberjs/ember-optional-features/pull/242) Update dependencies to latest versions. ([@rwjblue](https://github.com/rwjblue))
+
+#### :house: Internal
+* [#249](https://github.com/emberjs/ember-optional-features/pull/249) Drop util.promisify usage. ([@rwjblue](https://github.com/rwjblue))
+* [#248](https://github.com/emberjs/ember-optional-features/pull/248) Re-roll yarn.lock. ([@rwjblue](https://github.com/rwjblue))
+* [#247](https://github.com/emberjs/ember-optional-features/pull/247) Add prettier setup to eslint config. ([@rwjblue](https://github.com/rwjblue))
+* [#245](https://github.com/emberjs/ember-optional-features/pull/245) Update linting package versions. ([@rwjblue](https://github.com/rwjblue))
+* [#243](https://github.com/emberjs/ember-optional-features/pull/243) Update automated release setup. ([@rwjblue](https://github.com/rwjblue))
+* [#240](https://github.com/emberjs/ember-optional-features/pull/240) Drop TravisCI (in favor of GitHub Actions) ([@rwjblue](https://github.com/rwjblue))
+
+#### Committers: 2
+- Robert Jackson ([@rwjblue](https://github.com/rwjblue))
+- [@dependabot-preview[bot]](https://github.com/apps/dependabot-preview)
+
+
 ## v1.3.0 (2019-12-19)
 
 #### :rocket: Enhancement
