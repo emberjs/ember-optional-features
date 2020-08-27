@@ -24,7 +24,7 @@ const SHARED = {
   // TODO: promisify the sync code below
 
   _isFeatureAvailable(feature) {
-    let checker = new VersionChecker(this.project).forEmber();
+    let checker = new VersionChecker(this.project).for('ember-source');
     return checker.gte(`${feature.since}-beta.1`);
   },
 

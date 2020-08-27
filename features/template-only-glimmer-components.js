@@ -155,7 +155,7 @@ module.exports = {
         let componentPath = components[i];
         console.log(`  ${chalk.green('create')} ${componentPath}`);
         let absolutePath = path.join(project.root, componentPath);
-        await p(mkdirp)(path.dirname(absolutePath));
+        await mkdirp(path.dirname(absolutePath));
         await p(fs.writeFile)(absolutePath, ComponentFile, { encoding: 'UTF-8' });
       }
 
