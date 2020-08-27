@@ -9,7 +9,8 @@ const path = require('path');
 const strip = require('../utils').strip;
 
 module.exports = {
-  description: 'Wrap the top-level application template (application.hbs) with a `<div class="ember-view">` element.',
+  description:
+    'Wrap the top-level application template (application.hbs) with a `<div class="ember-view">` element.',
   url: 'https://github.com/emberjs/rfcs/pull/280',
   default: true,
   since: '3.1.0',
@@ -26,7 +27,13 @@ module.exports = {
 
     if (isPod) {
       // TODO
-      console.log(chalk.yellow(`${chalk.bold('Note:')} There is an automated refactor script available for this feature, but it does not currently support "pod" apps. PRs welcome!\n`));
+      console.log(
+        chalk.yellow(
+          `${chalk.bold(
+            'Note:'
+          )} There is an automated refactor script available for this feature, but it does not currently support "pod" apps. PRs welcome!\n`
+        )
+      );
       return;
     } else {
       templatePath = 'app/templates/application.hbs';
@@ -35,8 +42,10 @@ module.exports = {
     let absolutePath = path.join(root, templatePath);
 
     try {
-      originalContent = await p(fs.readFile)(absolutePath, { encoding: 'UTF-8' });
-    } catch(err) {
+      originalContent = await p(fs.readFile)(absolutePath, {
+        encoding: 'UTF-8',
+      });
+    } catch (err) {
       if (err.code === 'ENOENT') {
         return;
       } else {
@@ -58,7 +67,9 @@ module.exports = {
 
           - Depending on your choice of \`rootElement\`, your app might not be wrapped inside a block-level element anymore.
 
-        For more information, see ${chalk.underline('https://github.com/emberjs/rfcs/pull/280')}.
+        For more information, see ${chalk.underline(
+          'https://github.com/emberjs/rfcs/pull/280'
+        )}.
 
         To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
       `);
@@ -67,7 +78,7 @@ module.exports = {
         type: 'confirm',
         name: 'shouldRewrite',
         message: 'Would you like me to do that for you?',
-        default: false
+        default: false,
       });
 
       console.log();
@@ -93,7 +104,7 @@ module.exports = {
 
       content.push('<div class="ember-view">');
 
-      lines.forEach(line => {
+      lines.forEach((line) => {
         content.push(line === '' ? '' : `  ${line}`);
       });
 
@@ -105,9 +116,11 @@ module.exports = {
 
       console.log(`  ${chalk.yellow('overwrite')} ${templatePath}`);
 
-      await p(fs.writeFile)(templatePath, content.join('\n'), { encoding: 'UTF-8' });
+      await p(fs.writeFile)(templatePath, content.join('\n'), {
+        encoding: 'UTF-8',
+      });
 
       console.log();
     }
-  }
+  },
 };

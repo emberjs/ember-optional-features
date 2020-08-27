@@ -8,7 +8,7 @@ function stringify(obj) {
   return JSON.stringify(obj, null, 2);
 }
 
-QUnit.module('@ember/optional-features', hooks => {
+QUnit.module('@ember/optional-features', (hooks) => {
   let override, projectRoot;
 
   function buildAddon(features) {
@@ -16,7 +16,7 @@ QUnit.module('@ember/optional-features', hooks => {
       projectRoot.write({
         config: {
           'optional-features.json': stringify(features),
-        }
+        },
       });
     }
 
@@ -28,7 +28,7 @@ QUnit.module('@ember/optional-features', hooks => {
 
   hooks.beforeEach(() => {
     override = process.env.EMBER_OPTIONAL_FEATURES;
-    return createTempDir().then(tmpDir => {
+    return createTempDir().then((tmpDir) => {
       projectRoot = tmpDir;
 
       projectRoot.write({
@@ -36,7 +36,7 @@ QUnit.module('@ember/optional-features', hooks => {
           name: 'test-project',
           devDependencies: {
             'ember-cli': '*',
-          }
+          },
         }),
       });
     });
@@ -52,105 +52,152 @@ QUnit.module('@ember/optional-features', hooks => {
     return projectRoot.dispose();
   });
 
-  QUnit.test('it throws on invalid key', assert => {
+  QUnit.test('it throws on invalid key', (assert) => {
     assert.throws(() => buildAddon({ foo: true }), /Unknown feature "foo"/);
   });
 
-  QUnit.test('it throws on invalid value', assert => {
+  QUnit.test('it throws on invalid value', (assert) => {
     assert.throws(
       () => buildAddon({ 'application-template-wrapper': 'nope' }),
       /Unsupported value "nope" for "application-template-wrapper"/
     );
   });
 
-  QUnit.test('it generates an empty config when features are not passed', assert => {
-    let addon = buildAddon({});
-    assert.deepEqual(addon.config(), { EmberENV: {} }, 'Expecting empty config');
-  });
+  QUnit.test(
+    'it generates an empty config when features are not passed',
+    (assert) => {
+      let addon = buildAddon({});
+      assert.deepEqual(
+        addon.config(),
+        { EmberENV: {} },
+        'Expecting empty config'
+      );
+    }
+  );
 
-  QUnit.test('it generates the correct config when features are passed', assert => {
-    let addon = buildAddon({
-      'application-template-wrapper': false,
-      'template-only-glimmer-components': true,
-      'jquery-integration': true
-    });
+  QUnit.test(
+    'it generates the correct config when features are passed',
+    (assert) => {
+      let addon = buildAddon({
+        'application-template-wrapper': false,
+        'template-only-glimmer-components': true,
+        'jquery-integration': true,
+      });
 
-    let expected = {
-      EmberENV: {
-        "_APPLICATION_TEMPLATE_WRAPPER": false,
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
-        "_JQUERY_INTEGRATION": true
-      }
-    };
+      let expected = {
+        EmberENV: {
+          _APPLICATION_TEMPLATE_WRAPPER: false,
+          _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
+          _JQUERY_INTEGRATION: true,
+        },
+      };
 
-    assert.deepEqual(addon.config(), expected, 'Expecting correct config');
-  });
+      assert.deepEqual(addon.config(), expected, 'Expecting correct config');
+    }
+  );
 
-  QUnit.test('it does not remove features that matches their default value', assert => {
-    let addon = buildAddon({
-      'application-template-wrapper': true,
-      'template-only-glimmer-components': true,
-      'jquery-integration': true
-    });
+  QUnit.test(
+    'it does not remove features that matches their default value',
+    (assert) => {
+      let addon = buildAddon({
+        'application-template-wrapper': true,
+        'template-only-glimmer-components': true,
+        'jquery-integration': true,
+      });
 
-    let expected = {
-      EmberENV: {
-        "_APPLICATION_TEMPLATE_WRAPPER": true,
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
-        "_JQUERY_INTEGRATION": true
-      }
-    };
+      let expected = {
+        EmberENV: {
+          _APPLICATION_TEMPLATE_WRAPPER: true,
+          _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
+          _JQUERY_INTEGRATION: true,
+        },
+      };
 
-    assert.deepEqual(addon.config(), expected, 'Expecting correct config');
-  });
+      assert.deepEqual(addon.config(), expected, 'Expecting correct config');
+    }
+  );
 
-  QUnit.test('it allows `null` to mean using the default value', assert => {
+  QUnit.test('it allows `null` to mean using the default value', (assert) => {
     let addon = buildAddon({
       'application-template-wrapper': null,
       'template-only-glimmer-components': null,
-      'jquery-integration': null
+      'jquery-integration': null,
     });
 
     let expected = {
-      EmberENV: {}
+      EmberENV: {},
     };
 
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');
   });
 
-  QUnit.test('it can query the features with `isFeatureEnabled`', assert => {
+  QUnit.test('it can query the features with `isFeatureEnabled`', (assert) => {
     let addon = buildAddon({
-      'application-template-wrapper': false
+      'application-template-wrapper': false,
     });
 
-    assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting suppied value');
-    assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), false, 'Expecting default value');
+    assert.strictEqual(
+      addon.isFeatureEnabled('application-template-wrapper'),
+      false,
+      'Expecting suppied value'
+    );
+    assert.strictEqual(
+      addon.isFeatureEnabled('template-only-glimmer-components'),
+      false,
+      'Expecting default value'
+    );
   });
 
-  QUnit.test('it can query the features with `isFeatureExplicitlySet`', assert => {
-    let addon = buildAddon({
-      'application-template-wrapper': false
-    });
+  QUnit.test(
+    'it can query the features with `isFeatureExplicitlySet`',
+    (assert) => {
+      let addon = buildAddon({
+        'application-template-wrapper': false,
+      });
 
-    assert.strictEqual(addon.isFeatureExplicitlySet('application-template-wrapper'), true, 'Expecting value to exist');
-    assert.strictEqual(addon.isFeatureExplicitlySet('template-only-glimmer-components'), false, 'Expecting to not exist');
-  });
+      assert.strictEqual(
+        addon.isFeatureExplicitlySet('application-template-wrapper'),
+        true,
+        'Expecting value to exist'
+      );
+      assert.strictEqual(
+        addon.isFeatureExplicitlySet('template-only-glimmer-components'),
+        false,
+        'Expecting to not exist'
+      );
+    }
+  );
 
-  QUnit.test('it allows the config to be a overridden with an ENV variable', assert => {
-    process.env.EMBER_OPTIONAL_FEATURES = `{ "application-template-wrapper": false }`;
+  QUnit.test(
+    'it allows the config to be a overridden with an ENV variable',
+    (assert) => {
+      process.env.EMBER_OPTIONAL_FEATURES = `{ "application-template-wrapper": false }`;
 
-    let addon = buildAddon({
-      'application-template-wrapper': true,
-      'template-only-glimmer-components': true,
-      'jquery-integration': true
-    });
+      let addon = buildAddon({
+        'application-template-wrapper': true,
+        'template-only-glimmer-components': true,
+        'jquery-integration': true,
+      });
 
-    assert.strictEqual(addon.isFeatureEnabled('application-template-wrapper'), false, 'Expecting value from ENV var');
-    assert.strictEqual(addon.isFeatureEnabled('template-only-glimmer-components'), true, 'Expecting value from JSON');
-    assert.strictEqual(addon.isFeatureEnabled('jquery-integration'), true, 'Expecting value from JSON');
-  });
+      assert.strictEqual(
+        addon.isFeatureEnabled('application-template-wrapper'),
+        false,
+        'Expecting value from ENV var'
+      );
+      assert.strictEqual(
+        addon.isFeatureEnabled('template-only-glimmer-components'),
+        true,
+        'Expecting value from JSON'
+      );
+      assert.strictEqual(
+        addon.isFeatureEnabled('jquery-integration'),
+        true,
+        'Expecting value from JSON'
+      );
+    }
+  );
 
-  QUnit.test('can provide custom config path', assert => {
+  QUnit.test('can provide custom config path', (assert) => {
     projectRoot.write({
       'package.json': stringify({
         name: 'test-project',
@@ -159,7 +206,7 @@ QUnit.module('@ember/optional-features', hooks => {
         },
         'ember-addon': {
           configPath: 'tests/dummy/config',
-        }
+        },
       }),
       tests: {
         dummy: {
@@ -167,21 +214,21 @@ QUnit.module('@ember/optional-features', hooks => {
             'optional-features.json': stringify({
               'application-template-wrapper': false,
               'template-only-glimmer-components': true,
-              'jquery-integration': true
+              'jquery-integration': true,
             }),
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     let addon = buildAddon();
 
     let expected = {
       EmberENV: {
-        "_APPLICATION_TEMPLATE_WRAPPER": false,
-        "_TEMPLATE_ONLY_GLIMMER_COMPONENTS": true,
-        "_JQUERY_INTEGRATION": true
-      }
+        _APPLICATION_TEMPLATE_WRAPPER: false,
+        _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
+        _JQUERY_INTEGRATION: true,
+      },
     };
 
     assert.deepEqual(addon.config(), expected, 'Expecting correct config');

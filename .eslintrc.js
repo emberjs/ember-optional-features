@@ -3,23 +3,24 @@ module.exports = {
   plugins: ['node'],
   extends: [
     'eslint:recommended',
-    'plugin:node/recommended'
+    'plugin:node/recommended',
+    'plugin:prettier/recommended',
   ],
   parserOptions: {
     sourceType: 'script',
-    ecmaVersion: 2017
+    ecmaVersion: 2017,
   },
   env: {
     browser: false,
-    node: true
+    node: true,
   },
   overrides: [
     // test files
     {
       files: ['tests/**/*.js'],
       env: {
-        qunit: true
-      }
-    }
-  ]
+        qunit: true,
+      },
+    },
+  ],
 };

@@ -13,11 +13,11 @@ function getConfigPath(project) {
 function join(strings /*, ...args */) {
   let parts = [];
 
-  for (let i=0; i<strings.length-1; i++) {
-    parts.push(strings[i], arguments[i+1]);
+  for (let i = 0; i < strings.length - 1; i++) {
+    parts.push(strings[i], arguments[i + 1]);
   }
 
-  parts.push(strings[strings.length-1]);
+  parts.push(strings[strings.length - 1]);
 
   return parts.join('');
 }
@@ -42,11 +42,11 @@ function strip(/* strings, ...args */) {
 
   let indent = lines[0].match(/^ */)[0];
 
-  return lines.map(line => line.replace(indent, '')).join('\n');
+  return lines.map((line) => line.replace(indent, '')).join('\n');
 }
 
 module.exports = {
   getConfigPath,
   join,
-  strip
+  strip,
 };
