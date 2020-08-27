@@ -4,7 +4,7 @@
 const chalk = require('chalk');
 const fs = require('fs');
 const inquirer = require('inquirer');
-const p = require('util.promisify');
+const p = require('util').promisify;
 const path = require('path');
 const strip = require('../utils').strip;
 

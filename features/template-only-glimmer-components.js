@@ -6,7 +6,7 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const p = require('util.promisify');
+const p = require('util').promisify;
 const path = require('path');
 const strip = require('../utils').strip;
 
