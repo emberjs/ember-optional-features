@@ -35,7 +35,7 @@
     "broccoli-test-helper": "^2.0.0",
     "ember-cli": "~3.20.0",
     "ember-cli-dependency-checker": "^3.2.0",
-    "eslint": "^7.10.0",
+    "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",
