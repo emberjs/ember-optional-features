@@ -362,13 +362,13 @@ QUnit.module('commands', (hooks) => {
       }
     );
 
-    QUnit.test('it rewrites application.hbs when asked to', async function (
-      assert
-    ) {
-      project.write({
-        app: {
-          templates: {
-            'application.hbs': strip`
+    QUnit.test(
+      'it rewrites application.hbs when asked to',
+      async function (assert) {
+        project.write({
+          app: {
+            templates: {
+              'application.hbs': strip`
               <ul>
                 <li>One</li>
                 <li>Two</li>
@@ -379,18 +379,18 @@ QUnit.module('commands', (hooks) => {
 
               <!-- wow -->
             `,
+            },
           },
-        },
-      });
+        });
 
-      await run('feature:disable', 'application-template-wrapper', {
-        input: 'yes\n',
-      });
+        await run('feature:disable', 'application-template-wrapper', {
+          input: 'yes\n',
+        });
 
-      assert.deepEqual(
-        project.read('app/templates'),
-        {
-          'application.hbs': strip`
+        assert.deepEqual(
+          project.read('app/templates'),
+          {
+            'application.hbs': strip`
           <div class="ember-view">
             <ul>
               <li>One</li>
@@ -403,10 +403,11 @@ QUnit.module('commands', (hooks) => {
             <!-- wow -->
           </div>
         `,
-        },
-        'it should have rewritten the template with the wrapper'
-      );
-    });
+          },
+          'it should have rewritten the template with the wrapper'
+        );
+      }
+    );
 
     QUnit.test(
       'it does not rewrite application.hbs when asked not to',
@@ -625,21 +626,22 @@ QUnit.module('commands', (hooks) => {
       },
     };
 
-    QUnit.test('it generates component files when asked to', async function (
-      assert
-    ) {
-      project.write({ app: CLASSIC_BEFORE });
+    QUnit.test(
+      'it generates component files when asked to',
+      async function (assert) {
+        project.write({ app: CLASSIC_BEFORE });
 
-      await run('feature:enable', 'template-only-glimmer-components', {
-        input: 'yes\n',
-      });
+        await run('feature:enable', 'template-only-glimmer-components', {
+          input: 'yes\n',
+        });
 
-      assert.deepEqual(
-        project.read('app'),
-        CLASSIC_AFTER,
-        'it should have generated the component JS files'
-      );
-    });
+        assert.deepEqual(
+          project.read('app'),
+          CLASSIC_AFTER,
+          'it should have generated the component JS files'
+        );
+      }
+    );
 
     QUnit.test(
       'it generates component files without prompt when asked to',
