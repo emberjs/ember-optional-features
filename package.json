@@ -27,7 +27,7 @@
     "chalk": "^4.1.1",
     "ember-cli-version-checker": "^5.1.2",
     "glob": "^7.1.7",
-    "inquirer": "^7.3.3",
+    "inquirer": "^8.1.1",
     "mkdirp": "^1.0.4",
     "silent-error": "^1.1.1"
   },
