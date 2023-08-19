@@ -3,7 +3,6 @@
 
 const chalk = require('chalk');
 const fs = require('fs');
-const inquirer = require('inquirer');
 const p = require('util').promisify;
 const path = require('path');
 const strip = require('../utils').strip;
@@ -74,7 +73,7 @@ module.exports = {
         To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
       `);
 
-      let response = await inquirer.prompt({
+      let response = await require('inquirer').prompt({
         type: 'confirm',
         name: 'shouldRewrite',
         message: 'Would you like me to do that for you?',
