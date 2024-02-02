@@ -1,3 +1,5 @@
+# Changelog
+
 ## v2.0.0 (2020-08-27)
 
 #### :boom: Breaking Change
