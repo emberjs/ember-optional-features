@@ -82,6 +82,7 @@ QUnit.module('@ember/optional-features', (hooks) => {
         'application-template-wrapper': false,
         'template-only-glimmer-components': true,
         'jquery-integration': true,
+        'no-implicit-route-model': false,
       });
 
       let expected = {
@@ -89,6 +90,7 @@ QUnit.module('@ember/optional-features', (hooks) => {
           _APPLICATION_TEMPLATE_WRAPPER: false,
           _TEMPLATE_ONLY_GLIMMER_COMPONENTS: true,
           _JQUERY_INTEGRATION: true,
+          _NO_IMPLICIT_ROUTE_MODEL: false,
         },
       };
 
