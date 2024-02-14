@@ -42,7 +42,7 @@
     "execa": "^4.0.3",
     "prettier": "^2.3.2",
     "qunit": "^2.16.0",
-    "release-plan": "^0.7.0"
+    "release-plan": "^0.7.1"
   },
   "engines": {
     "node": "10.* || 12.* || >= 14"
