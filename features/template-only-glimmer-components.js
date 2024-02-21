@@ -3,7 +3,6 @@
 
 const chalk = require('chalk');
 const fs = require('fs');
-const inquirer = require('inquirer');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const p = require('util').promisify;
@@ -181,7 +180,7 @@ module.exports = {
         `);
       }
 
-      let response = await inquirer.prompt({
+      let response = await require('inquirer').prompt({
         type: 'confirm',
         name: 'shouldGenerate',
         message: 'Would you like me to generate these component files for you?',
