@@ -1,0 +1,21 @@
+{
+  "solution": {
+    "@ember/optional-features": {
+      "impact": "minor",
+      "oldVersion": "2.0.0",
+      "newVersion": "2.1.0",
+      "constraints": [
+        {
+          "impact": "minor",
+          "reason": "Appears in changelog section :rocket: Enhancement"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
+    }
+  },
+  "description": "## Release (2024-02-21)\n\n@ember/optional-features 2.1.0 (minor)\n\n#### :rocket: Enhancement\n* `@ember/optional-features`\n  * [#334](https://github.com/emberjs/ember-optional-features/pull/334) Add feature for no-implicit-route-model - only effective from ember-source 5.7 ([@achambers](https://github.com/achambers))\n\n#### :house: Internal\n* `@ember/optional-features`\n  * [#339](https://github.com/emberjs/ember-optional-features/pull/339) update release-plan ([@mansona](https://github.com/mansona))\n  * [#337](https://github.com/emberjs/ember-optional-features/pull/337) Setup release plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#338](https://github.com/emberjs/ember-optional-features/pull/338) switch to npm ([@mansona](https://github.com/mansona))\n  * [#335](https://github.com/emberjs/ember-optional-features/pull/335) Test against Node 16, 18, and 20 ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 3\n- Aaron Chambers ([@achambers](https://github.com/achambers))\n- Chris Manson ([@mansona](https://github.com/mansona))\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+}

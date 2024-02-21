@@ -1,5 +1,25 @@
 # Changelog
 
+## Release (2024-02-21)
+
+@ember/optional-features 2.1.0 (minor)
+
+#### :rocket: Enhancement
+* `@ember/optional-features`
+  * [#334](https://github.com/emberjs/ember-optional-features/pull/334) Add feature for no-implicit-route-model - only effective from ember-source 5.7 ([@achambers](https://github.com/achambers))
+
+#### :house: Internal
+* `@ember/optional-features`
+  * [#339](https://github.com/emberjs/ember-optional-features/pull/339) update release-plan ([@mansona](https://github.com/mansona))
+  * [#337](https://github.com/emberjs/ember-optional-features/pull/337) Setup release plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+  * [#338](https://github.com/emberjs/ember-optional-features/pull/338) switch to npm ([@mansona](https://github.com/mansona))
+  * [#335](https://github.com/emberjs/ember-optional-features/pull/335) Test against Node 16, 18, and 20 ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 3
+- Aaron Chambers ([@achambers](https://github.com/achambers))
+- Chris Manson ([@mansona](https://github.com/mansona))
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## v2.0.0 (2020-08-27)
 
 #### :boom: Breaking Change
