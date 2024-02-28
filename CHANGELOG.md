@@ -1,5 +1,17 @@
 # Changelog
 
+## Release (2024-02-28)
+
+@ember/optional-features 2.2.0 (minor)
+
+#### :rocket: Enhancement
+* `@ember/optional-features`
+  * [#333](https://github.com/emberjs/ember-optional-features/pull/333) Lazy load `inquirer` module ([@bertdeblock](https://github.com/bertdeblock))
+
+#### Committers: 2
+- Aaron Chambers ([@achambers](https://github.com/achambers))
+- Bert De Block ([@bertdeblock](https://github.com/bertdeblock))
+
 ## Release (2024-02-21)
 
 @ember/optional-features 2.1.0 (minor)
