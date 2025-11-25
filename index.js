@@ -1,6 +1,7 @@
 'use strict';
 
 const SilentError = require('silent-error');
+const chalk = require('chalk');
 
 const FEATURES = require('./features');
 const getConfigPath = require('./utils').getConfigPath;
@@ -42,8 +43,10 @@ module.exports = {
     let keys = Object.keys(features);
     keys.forEach((key) => {
       if (FEATURES[key] === undefined) {
-        throw new SilentError(
-          `Unknown feature "${key}" found in config/optional-features.json`
+        console.warn(
+          chalk.yellow(
+            `Warning: Unknown feature "${key}" found in config/optional-features.json`
+          )
         );
       } else if (features[key] !== null && typeof features[key] !== 'boolean') {
         throw new SilentError(

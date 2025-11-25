@@ -52,8 +52,23 @@ QUnit.module('@ember/optional-features', (hooks) => {
     return projectRoot.dispose();
   });
 
-  QUnit.test('it throws on invalid key', (assert) => {
-    assert.throws(() => buildAddon({ foo: true }), /Unknown feature "foo"/);
+  QUnit.test('it warns on invalid key', (assert) => {
+    let originalWarn = console.warn;
+    let warningMessage = null;
+    console.warn = (msg) => {
+      warningMessage = msg;
+    };
+    try {
+      let addon = buildAddon({ foo: true });
+      assert.ok(
+        warningMessage && warningMessage.includes('Unknown feature "foo"'),
+        'Should warn about unknown feature'
+      );
+      // The addon should still initialize successfully
+      assert.ok(addon.config, 'Addon should be initialized');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   QUnit.test('it throws on invalid value', (assert) => {
