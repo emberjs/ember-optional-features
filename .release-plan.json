@@ -2,8 +2,8 @@
   "solution": {
     "@ember/optional-features": {
       "impact": "minor",
-      "oldVersion": "2.1.0",
-      "newVersion": "2.2.0",
+      "oldVersion": "2.2.0",
+      "newVersion": "2.3.0",
       "constraints": [
         {
           "impact": "minor",
@@ -13,5 +13,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2024-02-28)\n\n@ember/optional-features 2.2.0 (minor)\n\n#### :rocket: Enhancement\n* `@ember/optional-features`\n  * [#333](https://github.com/emberjs/ember-optional-features/pull/333) Lazy load `inquirer` module ([@bertdeblock](https://github.com/bertdeblock))\n\n#### Committers: 2\n- Aaron Chambers ([@achambers](https://github.com/achambers))\n- Bert De Block ([@bertdeblock](https://github.com/bertdeblock))\n"
+  "description": "## Release (2025-11-25)\n\n@ember/optional-features 2.3.0 (minor)\n\n#### :rocket: Enhancement\n* `@ember/optional-features`\n  * [#349](https://github.com/emberjs/ember-optional-features/pull/349) Introducing use-ember-modules flag ([@ef4](https://github.com/ef4))\n\n#### Committers: 1\n- Edward Faulkner ([@ef4](https://github.com/ef4))\n"
 }

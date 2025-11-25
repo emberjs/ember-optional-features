@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2025-11-25)
+
+@ember/optional-features 2.3.0 (minor)
+
+#### :rocket: Enhancement
+* `@ember/optional-features`
+  * [#349](https://github.com/emberjs/ember-optional-features/pull/349) Introducing use-ember-modules flag ([@ef4](https://github.com/ef4))
+
+#### Committers: 1
+- Edward Faulkner ([@ef4](https://github.com/ef4))
+
 ## Release (2024-02-28)
 
 @ember/optional-features 2.2.0 (minor)
