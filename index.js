@@ -68,7 +68,19 @@ module.exports = {
 
   isFeatureEnabled(name) {
     let value = this._features[name];
-    return value !== undefined ? value : FEATURES[name].default;
+    if (value !== undefined) {
+      return value;
+    }
+    let feature = FEATURES[name];
+    if (feature === undefined) {
+      console.warn(
+        chalk.yellow(
+          `Warning: Unknown feature "${name}" passed to isFeatureEnabled`
+        )
+      );
+      return null;
+    }
+    return feature.default;
   },
 
   isFeatureExplicitlySet(name) {
