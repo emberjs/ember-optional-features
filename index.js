@@ -43,10 +43,8 @@ module.exports = {
     let keys = Object.keys(features);
     keys.forEach((key) => {
       if (FEATURES[key] === undefined) {
-        console.warn(
-          chalk.yellow(
-            `Warning: Unknown feature "${key}" found in config/optional-features.json`
-          )
+        throw new SilentError(
+          `Unknown feature "${key}" found in config/optional-features.json`
         );
       } else if (features[key] !== null && typeof features[key] !== 'boolean') {
         throw new SilentError(
