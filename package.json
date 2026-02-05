@@ -26,14 +26,14 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "ember-cli-version-checker": "^5.1.2",
-    "glob": "^7.1.7",
-    "inquirer": "^7.3.3",
+    "glob": "^13.0.1",
+    "inquirer": "^13.2.2",
     "mkdirp": "^1.0.4",
     "silent-error": "^1.1.1"
   },
   "devDependencies": {
     "broccoli-test-helper": "^2.0.0",
-    "ember-cli": "~3.23.0",
+    "ember-cli": "~6.10.0",
     "ember-cli-dependency-checker": "^3.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
@@ -42,7 +42,7 @@
     "execa": "^4.0.3",
     "prettier": "^2.3.2",
     "qunit": "^2.16.0",
-    "release-plan": "^0.7.1"
+    "release-plan": "^0.17.4"
   },
   "engines": {
     "node": "10.* || 12.* || >= 14"
