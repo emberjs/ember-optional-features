@@ -45,7 +45,7 @@
     "release-plan": "^0.17.4"
   },
   "engines": {
-    "node": "10.* || 12.* || >= 14"
+    "node": ">= 20.19"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
