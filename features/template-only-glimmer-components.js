@@ -3,7 +3,7 @@
 
 const chalk = require('chalk');
 const fs = require('fs');
-const glob = require('glob');
+const globSync = require('glob').globSync;
 const mkdirp = require('mkdirp');
 const p = require('util').promisify;
 const path = require('path');
@@ -65,7 +65,7 @@ module.exports = {
 
     // Handle "Classic" layout
     let templatesRoot = path.join(root, 'app/templates/components');
-    let templateCandidates = await p(glob)('**/*.hbs', { cwd: templatesRoot });
+    let templateCandidates = globSync('**/*.hbs', { cwd: templatesRoot });
 
     templateCandidates.forEach((template) => {
       let templatePath = path.join('app/templates/components', template);
@@ -89,7 +89,7 @@ module.exports = {
     // Handle "Pods" layout without prefix
 
     let componentsRoot = path.join(root, 'app/components');
-    templateCandidates = await p(glob)('**/template.hbs', {
+    templateCandidates = globSync('**/template.hbs', {
       cwd: componentsRoot,
     });
 
@@ -115,7 +115,7 @@ module.exports = {
     // Handle "Pods" layout *with* prefix
 
     componentsRoot = path.join(root, `app/${podsFolder}/components`);
-    templateCandidates = await p(glob)('**/template.hbs', {
+    templateCandidates = globSync('**/template.hbs', {
       cwd: componentsRoot,
     });
 
@@ -179,8 +179,8 @@ module.exports = {
             )}
         `);
       }
-
-      let response = await require('inquirer').prompt({
+      const prompt = require('inquirer').createPromptModule();
+      let response = await prompt({
         type: 'confirm',
         name: 'shouldGenerate',
         message: 'Would you like me to generate these component files for you?',
