@@ -72,8 +72,8 @@ module.exports = {
 
         To be very conservative, I could add the \`<div class="ember-view">\` wrapper to your application.hbs. (You can always remove it later.)
       `);
-
-      let response = await require('inquirer').prompt({
+      const prompt = require('inquirer').createPromptModule();
+      let response = await prompt({
         type: 'confirm',
         name: 'shouldRewrite',
         message: 'Would you like me to do that for you?',
