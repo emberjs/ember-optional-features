@@ -151,6 +151,29 @@ QUnit.module('@ember/optional-features', (hooks) => {
   });
 
   QUnit.test(
+    'it warns and returns null for unknown feature in isFeatureEnabled',
+    (assert) => {
+      let addon = buildAddon({});
+      let originalWarn = console.warn;
+      let warningMessage = null;
+      console.warn = (msg) => {
+        warningMessage = msg;
+      };
+      try {
+        let result = addon.isFeatureEnabled('unknown-feature');
+        assert.strictEqual(result, null, 'Expecting null for unknown feature');
+        assert.ok(
+          warningMessage &&
+            warningMessage.includes('Unknown feature "unknown-feature"'),
+          'Should warn about unknown feature'
+        );
+      } finally {
+        console.warn = originalWarn;
+      }
+    }
+  );
+
+  QUnit.test(
     'it can query the features with `isFeatureExplicitlySet`',
     (assert) => {
       let addon = buildAddon({
