@@ -49,5 +49,6 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "packageManager": "pnpm@10.29.1"
 }
