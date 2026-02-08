@@ -1,6 +1,6 @@
 {
   "name": "@ember/optional-features",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
     "ember-addon"

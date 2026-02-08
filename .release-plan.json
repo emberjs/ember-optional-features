@@ -1,17 +1,26 @@
 {
   "solution": {
     "@ember/optional-features": {
-      "impact": "minor",
-      "oldVersion": "2.2.0",
-      "newVersion": "2.3.0",
+      "impact": "major",
+      "oldVersion": "2.3.0",
+      "newVersion": "3.0.0",
+      "tagName": "latest",
       "constraints": [
+        {
+          "impact": "major",
+          "reason": "Appears in changelog section :boom: Breaking Change"
+        },
         {
           "impact": "minor",
           "reason": "Appears in changelog section :rocket: Enhancement"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-11-25)\n\n@ember/optional-features 2.3.0 (minor)\n\n#### :rocket: Enhancement\n* `@ember/optional-features`\n  * [#349](https://github.com/emberjs/ember-optional-features/pull/349) Introducing use-ember-modules flag ([@ef4](https://github.com/ef4))\n\n#### Committers: 1\n- Edward Faulkner ([@ef4](https://github.com/ef4))\n"
+  "description": "## Release (2026-02-08)\n\n* @ember/optional-features 3.0.0 (major)\n\n#### :boom: Breaking Change\n* `@ember/optional-features`\n  * [#352](https://github.com/emberjs/ember-optional-features/pull/352) update inquirer and glob (to clear audit warnings) and drop support for node < 20.19 ([@void-mAlex](https://github.com/void-mAlex))\n\n#### :rocket: Enhancement\n* `@ember/optional-features`\n  * [#358](https://github.com/emberjs/ember-optional-features/pull/358) [e18e] replace glob with tinyglobby ([@mansona](https://github.com/mansona))\n  * [#357](https://github.com/emberjs/ember-optional-features/pull/357) [e18e] replace mkdirp with native mkdirSync with recursive: true ([@mansona](https://github.com/mansona))\n  * [#356](https://github.com/emberjs/ember-optional-features/pull/356) [e18e] swap from chalk to native styleText ([@mansona](https://github.com/mansona))\n\n#### :house: Internal\n* `@ember/optional-features`\n  * [#355](https://github.com/emberjs/ember-optional-features/pull/355) update release-plan ([@mansona](https://github.com/mansona))\n  * [#354](https://github.com/emberjs/ember-optional-features/pull/354) swap to pnpm ([@mansona](https://github.com/mansona))\n\n#### Committers: 2\n- Alex ([@void-mAlex](https://github.com/void-mAlex))\n- Chris Manson ([@mansona](https://github.com/mansona))\n"
 }

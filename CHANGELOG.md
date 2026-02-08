@@ -1,5 +1,28 @@
 # Changelog
 
+## Release (2026-02-08)
+
+* @ember/optional-features 3.0.0 (major)
+
+#### :boom: Breaking Change
+* `@ember/optional-features`
+  * [#352](https://github.com/emberjs/ember-optional-features/pull/352) update inquirer and glob (to clear audit warnings) and drop support for node < 20.19 ([@void-mAlex](https://github.com/void-mAlex))
+
+#### :rocket: Enhancement
+* `@ember/optional-features`
+  * [#358](https://github.com/emberjs/ember-optional-features/pull/358) [e18e] replace glob with tinyglobby ([@mansona](https://github.com/mansona))
+  * [#357](https://github.com/emberjs/ember-optional-features/pull/357) [e18e] replace mkdirp with native mkdirSync with recursive: true ([@mansona](https://github.com/mansona))
+  * [#356](https://github.com/emberjs/ember-optional-features/pull/356) [e18e] swap from chalk to native styleText ([@mansona](https://github.com/mansona))
+
+#### :house: Internal
+* `@ember/optional-features`
+  * [#355](https://github.com/emberjs/ember-optional-features/pull/355) update release-plan ([@mansona](https://github.com/mansona))
+  * [#354](https://github.com/emberjs/ember-optional-features/pull/354) swap to pnpm ([@mansona](https://github.com/mansona))
+
+#### Committers: 2
+- Alex ([@void-mAlex](https://github.com/void-mAlex))
+- Chris Manson ([@mansona](https://github.com/mansona))
+
 ## Release (2025-11-25)
 
 @ember/optional-features 2.3.0 (minor)
