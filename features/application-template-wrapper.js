@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 'use strict';
 
-const chalk = require('chalk');
 const fs = require('fs');
 const p = require('util').promisify;
 const path = require('path');
+const { styleText } = require('node:util');
 const strip = require('../utils').strip;
 
 module.exports = {
@@ -27,8 +27,10 @@ module.exports = {
     if (isPod) {
       // TODO
       console.log(
-        chalk.yellow(
-          `${chalk.bold(
+        styleText(
+          'yellow',
+          `${styleText(
+            'bold',
             'Note:'
           )} There is an automated refactor script available for this feature, but it does not currently support "pod" apps. PRs welcome!\n`
         )
@@ -54,7 +56,7 @@ module.exports = {
 
     if (shouldRunCodemod === undefined) {
       console.log(strip`
-        Disabling ${chalk.bold('application-template-wrapper')}...
+        Disabling ${styleText('bold', 'application-template-wrapper')}...
 
         This will remove the \`<div class="ember-view">\` wrapper for the top-level application template (\`${templatePath}\`).
 
@@ -66,7 +68,8 @@ module.exports = {
 
           - Depending on your choice of \`rootElement\`, your app might not be wrapped inside a block-level element anymore.
 
-        For more information, see ${chalk.underline(
+        For more information, see ${styleText(
+          'underline',
           'https://github.com/emberjs/rfcs/pull/280'
         )}.
 
@@ -113,7 +116,7 @@ module.exports = {
         content.push('');
       }
 
-      console.log(`  ${chalk.yellow('overwrite')} ${templatePath}`);
+      console.log(`  ${styleText('yellow', 'overwrite')} ${templatePath}`);
 
       await p(fs.writeFile)(templatePath, content.join('\n'), {
         encoding: 'UTF-8',

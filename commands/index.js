@@ -3,10 +3,10 @@
 
 const VersionChecker = require('ember-cli-version-checker');
 
-const chalk = require('chalk');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
+const { styleText } = require('node:util');
 const strip = require('../utils').strip;
 const getConfigPath = require('../utils').getConfigPath;
 
@@ -15,9 +15,16 @@ const FEATURES = require('../features');
 const USAGE_MESSAGE = strip`
   Usage:
 
-    To list all available features, run ${chalk.bold('ember feature:list')}.
-    To enable a feature, run ${chalk.bold('ember feature:enable some-feature')}.
-    To disable a feature, run ${chalk.bold(
+    To list all available features, run ${styleText(
+      'bold',
+      'ember feature:list'
+    )}.
+    To enable a feature, run ${styleText(
+      'bold',
+      'ember feature:enable some-feature'
+    )}.
+    To disable a feature, run ${styleText(
+      'bold',
       'ember feature:disable some-feature'
     )}.
 `;
@@ -53,7 +60,10 @@ const SHARED = {
 
     if (feature === undefined) {
       console.log(
-        chalk.red(`Error: ${chalk.bold(name)} is not a valid feature.\n`)
+        styleText(
+          'red',
+          `Error: ${styleText('bold', name)} is not a valid feature.\n`
+        )
       );
       return LIST_FEATURES.run.apply(this);
     }
@@ -64,8 +74,9 @@ const SHARED = {
     );
     if (!this._isFeatureAvailable(feature)) {
       console.log(
-        chalk.red(
-          `Error: ${chalk.bold(name)} is only available in Ember ${
+        styleText(
+          'red',
+          `Error: ${styleText('bold', name)} is only available in Ember ${
             feature.since
           } or above.`
         )
@@ -94,8 +105,10 @@ const SHARED = {
     let state = value ? 'Enabled' : 'Disabled';
 
     console.log(
-      chalk.green(
-        `${state} ${chalk.bold(name)}. Be sure to commit ${chalk.underline(
+      styleText(
+        'green',
+        `${state} ${styleText('bold', name)}. Be sure to commit ${styleText(
+          'underline',
           'config/optional-features.json'
         )} to source control!`
       )
@@ -135,10 +148,14 @@ const LIST_FEATURES = Object.assign(
         if (this._isFeatureAvailable(feature)) {
           console.log(strip`
           ${INDENT_START}
-            ${chalk.bold(key)} ${chalk.cyan(`(Default: ${feature.default})`)}
+            ${styleText('bold', key)} ${styleText(
+            'cyan',
+            `(Default: ${feature.default})`
+          )}
               ${feature.description}
-              ${chalk.gray(
-                `More information: ${chalk.underline(feature.url)}`
+              ${styleText(
+                'gray',
+                `More information: ${styleText('underline', feature.url)}`
               )}`);
 
           hasFeatures = true;
@@ -149,10 +166,13 @@ const LIST_FEATURES = Object.assign(
         console.log();
       } else {
         console.log(
-          chalk.gray(strip`
+          styleText(
+            'gray',
+            strip`
         ${INDENT_START}
           No optional features available for your current Ember version.
-      `)
+      `
+          )
         );
       }
     },

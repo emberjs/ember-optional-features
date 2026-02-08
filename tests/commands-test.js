@@ -8,6 +8,7 @@ const execa = require('execa');
 const mkdirp = require('mkdirp');
 const p = require('path').join;
 const strip = require('../utils').strip;
+const { stripVTControlCharacters: stripAnsi } = require('node:util');
 
 const FEATURES = require('../features');
 
@@ -99,15 +100,17 @@ QUnit.module('commands', (hooks) => {
         let feature = FEATURES[key];
 
         assert.ok(
-          result.stdout.indexOf(`${key} (Default: ${feature.default}`) >= 0,
+          stripAnsi(result.stdout).indexOf(
+            `${key} (Default: ${feature.default}`
+          ) >= 0,
           `it should include ${key} and its default value`
         );
         assert.ok(
-          result.stdout.indexOf(feature.description) >= 0,
+          stripAnsi(result.stdout).indexOf(feature.description) >= 0,
           `it should include the description for ${key}`
         );
         assert.ok(
-          result.stdout.indexOf(feature.url) >= 0,
+          stripAnsi(result.stdout).indexOf(feature.url) >= 0,
           `it should include the URL for ${key}`
         );
       });
@@ -190,7 +193,8 @@ QUnit.module('commands', (hooks) => {
           'it should print an error'
         );
         assert.ok(
-          result.stdout.indexOf('foo-bar is not a valid feature') >= 0,
+          stripAnsi(result.stdout).indexOf('foo-bar is not a valid feature') >=
+            0,
           'it should print an error'
         );
       });
@@ -216,11 +220,11 @@ QUnit.module('commands', (hooks) => {
         );
 
         assert.ok(
-          result.stdout.indexOf('Error:') >= 0,
+          stripAnsi(result.stdout).indexOf('Error:') >= 0,
           'it should print an error'
         );
         assert.ok(
-          result.stdout.indexOf(
+          stripAnsi(result.stdout).indexOf(
             'application-template-wrapper is only available in Ember 3.1.0 or above'
           ) >= 0,
           'it should print an error'
