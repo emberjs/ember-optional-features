@@ -3,7 +3,7 @@
 
 const { styleText } = require('node:util');
 const fs = require('fs');
-const globSync = require('glob').globSync;
+const { globSync } = require('tinyglobby');
 const { mkdirSync } = require('node:fs');
 const p = require('util').promisify;
 const path = require('path');
