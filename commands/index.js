@@ -4,11 +4,11 @@
 const VersionChecker = require('ember-cli-version-checker');
 
 const fs = require('fs');
-const mkdirp = require('mkdirp');
 const path = require('path');
 const { styleText } = require('node:util');
 const strip = require('../utils').strip;
 const getConfigPath = require('../utils').getConfigPath;
+const { mkdirSync } = require('node:fs');
 
 const FEATURES = require('../features');
 
@@ -48,7 +48,9 @@ const SHARED = {
       }
     }
 
-    mkdirp.sync(path.join(this.project.root, path.dirname(configPath)));
+    mkdirSync(path.join(this.project.root, path.dirname(configPath)), {
+      recursive: true,
+    });
 
     fs.writeFileSync(configPath, '{}', { encoding: 'UTF-8' });
 

@@ -27,7 +27,6 @@
     "ember-cli-version-checker": "^5.1.2",
     "glob": "^13.0.1",
     "inquirer": "^13.2.2",
-    "mkdirp": "^1.0.4",
     "silent-error": "^1.1.1"
   },
   "devDependencies": {
