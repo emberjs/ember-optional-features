@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 'use strict';
 
-const chalk = require('chalk');
+const { styleText } = require('node:util');
 const fs = require('fs');
 const globSync = require('glob').globSync;
 const mkdirp = require('mkdirp');
@@ -38,8 +38,10 @@ module.exports = {
     if (podModulePrefix) {
       if (!modulePrefix || !podModulePrefix.startsWith(`${modulePrefix}/`)) {
         console.log(
-          chalk.yellow(
-            `${chalk.bold(
+          styleText(
+            'yellow',
+            `${styleText(
+              'bold',
               'Note:'
             )} There is an automated refactor script available for this feature, but your \`podModulePrefix\` could not be processed correctly.\n`
           )
@@ -50,8 +52,10 @@ module.exports = {
       podsFolder = podModulePrefix.slice(modulePrefix.length + 1);
       if (!podsFolder) {
         console.log(
-          chalk.yellow(
-            `${chalk.bold(
+          styleText(
+            'yellow',
+            `${styleText(
+              'bold',
               'Note:'
             )} There is an automated refactor script available for this feature, but your \`podModulePrefix\` could not be processed correctly.\n`
           )
@@ -144,7 +148,7 @@ module.exports = {
 
     if (shouldRunCodemod === undefined) {
       console.log(strip`
-        Enabling ${chalk.bold('template-only-glimmer-components')}...
+        Enabling ${styleText('bold', 'template-only-glimmer-components')}...
 
         This will change the semantics for template-only components (components without a \`.js\` file).
 
@@ -156,13 +160,16 @@ module.exports = {
 
           - Passing classes in the invocation (i.e. \`{{my-component class="..."}}\`) will not work, since there is no wrapper element to apply the classes to.
 
-        For more information, see ${chalk.underline(
+        For more information, see ${styleText(
+          'underline',
           'https://github.com/emberjs/rfcs/pull/278'
         )}.
 
-        While these changes may be desirable for ${chalk.italic(
+        While these changes may be desirable for ${styleText(
+          'italic',
           'new components'
-        )}, they may unexpectedly break the styling or runtime behavior of your ${chalk.italic(
+        )}, they may unexpectedly break the styling or runtime behavior of your ${styleText(
+        'italic',
         'existing components'
       )}.
 
@@ -173,9 +180,13 @@ module.exports = {
       for (let i = 0; i < templates.length; i++) {
         console.log(strip`
         ${INDENT_START}
-          - ${chalk.underline(templates[i])}
-            ${chalk.gray(
-              `(Recommendation: add ${chalk.cyan.underline(components[i])})`
+          - ${styleText('underline', templates[i])}
+            ${styleText(
+              'gray',
+              `(Recommendation: add ${styleText(
+                'cyan',
+                styleText('underline', components[i])
+              )})`
             )}
         `);
       }
@@ -195,7 +206,7 @@ module.exports = {
     if (shouldRunCodemod) {
       for (let i = 0; i < components.length; i++) {
         let componentPath = components[i];
-        console.log(`  ${chalk.green('create')} ${componentPath}`);
+        console.log(`  ${styleText('green', 'create')} ${componentPath}`);
         let absolutePath = path.join(project.root, componentPath);
         await mkdirp(path.dirname(absolutePath));
         await p(fs.writeFile)(absolutePath, ComponentFile, {
