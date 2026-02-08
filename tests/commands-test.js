@@ -5,7 +5,7 @@ const CWD = process.cwd();
 const fs = require('fs');
 const createTempDir = require('broccoli-test-helper').createTempDir;
 const execa = require('execa');
-const mkdirp = require('mkdirp');
+const { mkdirSync } = require('node:fs');
 const p = require('path').join;
 const strip = require('../utils').strip;
 const { stripVTControlCharacters: stripAnsi } = require('node:util');
@@ -45,11 +45,11 @@ QUnit.module('commands', (hooks) => {
 
     process.chdir(project.path());
 
-    mkdirp.sync(p(CWD, 'node_modules', '@ember'));
+    mkdirSync(p(CWD, 'node_modules', '@ember'), { recursive: true });
     fs.symlinkSync(p(CWD, 'node_modules'), p(project.path(), 'node_modules'));
     fs.symlinkSync(CWD, p(CWD, 'node_modules', '@ember', 'optional-features'));
 
-    mkdirp.sync(p(CWD, 'node_modules', 'ember-source'));
+    mkdirSync(p(CWD, 'node_modules', 'ember-source'), { recursive: true });
     fs.writeFileSync(
       p(CWD, 'node_modules', 'ember-source', 'package.json'),
       strip`

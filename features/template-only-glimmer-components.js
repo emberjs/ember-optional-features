@@ -4,7 +4,7 @@
 const { styleText } = require('node:util');
 const fs = require('fs');
 const globSync = require('glob').globSync;
-const mkdirp = require('mkdirp');
+const { mkdirSync } = require('node:fs');
 const p = require('util').promisify;
 const path = require('path');
 const strip = require('../utils').strip;
@@ -208,7 +208,7 @@ module.exports = {
         let componentPath = components[i];
         console.log(`  ${styleText('green', 'create')} ${componentPath}`);
         let absolutePath = path.join(project.root, componentPath);
-        await mkdirp(path.dirname(absolutePath));
+        await mkdirSync(path.dirname(absolutePath), { recursive: true });
         await p(fs.writeFile)(absolutePath, ComponentFile, {
           encoding: 'UTF-8',
         });
