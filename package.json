@@ -44,11 +44,11 @@
     "qunit": "^2.16.0",
     "release-plan": "^0.17.4"
   },
+  "packageManager": "pnpm@10.29.1",
   "engines": {
     "node": ">= 20.19"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
-  },
-  "packageManager": "pnpm@10.29.1"
+  }
 }
